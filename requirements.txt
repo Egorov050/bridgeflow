@@ -244,5 +244,4 @@ wsproto==1.2.0
 xgboost==2.1.0
 xlrd==2.0.1
 yarl==1.9.3
-ydata-profiling @ https://github.com/pandas-profiling/pandas-profiling/archive/master.zip#sha256=cd7e48c8aee3ace9d9815e6bdcbd01e8ac4f938b7746c68b39a0e49e60299fde
-zipp==3.17.0
+ydata-profiling @ https://github.com/pandas-profiling/pandas-profiling/archive/master.zip#sha256=1814c910010f065726da561318ede521a1384c47af5ac44d608859f0ee52dc7b
