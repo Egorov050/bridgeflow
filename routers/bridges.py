@@ -5,6 +5,11 @@ from typing import Optional
 from database import get_db
 from models import Bridge
 
+from connectors.bitrix24 import register_webhook
+import os
+
+BASE_URL = os.getenv("BASE_URL", "https://bridgeflow.onrender.com")
+
 router = APIRouter()
 
 class BridgeCreate(BaseModel):
@@ -31,6 +36,14 @@ def create_bridge(data: BridgeCreate, db: Session = Depends(get_db)):
     db.add(bridge)
     db.commit()
     db.refresh(bridge)
+
+    # Автоматически регистрируем вебхук в Bitrix24
+    if bridge.source_type == "bitrix24":
+        domain = bridge.source_config.get("domain")
+        token  = bridge.source_config.get("token")
+        handler_url = f"{BASE_URL}/api/webhooks/{bridge.event_type}"
+        register_webhook(domain, token, bridge.event_type, handler_url)
+
     return bridge
 
 @router.get("/{bridge_id}")
