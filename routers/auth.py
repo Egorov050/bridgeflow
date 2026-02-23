@@ -30,7 +30,7 @@ def register(data: RegisterData, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
-    return {"ok": True, "user_id": user.id}
+    return {"ok": True, "user_id": user.id, "email": user.email}
 
 @router.post("/login")
 def login(data: LoginData, db: Session = Depends(get_db)):
