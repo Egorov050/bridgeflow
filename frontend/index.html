@@ -773,6 +773,42 @@
 
 <body>
 
+    <!-- AUTH SCREEN -->
+    <div id="screen-auth" style="
+    position:fixed;inset:0;background:#0d0f14;
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;
+    ">
+        <div style="width:400px;">
+            <div
+                style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;text-align:center;margin-bottom:32px;">
+                Bridge<span style="color:#4f7cff">Flow</span>
+            </div>
+
+            <div style="display:flex;gap:0;margin-bottom:24px;background:#161920;border-radius:10px;padding:4px;">
+                <button id="tab-login" onclick="switchTab('login')"
+                    style="flex:1;padding:8px;border:none;border-radius:8px;background:#4f7cff;color:white;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Войти</button>
+                <button id="tab-register" onclick="switchTab('register')"
+                    style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:#6b718a;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Регистрация</button>
+            </div>
+
+            <div style="background:#161920;border:1px solid #2a2f3f;border-radius:14px;padding:28px;">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input class="form-input" id="auth-email" type="email" placeholder="you@company.ru">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input class="form-input" id="auth-password" type="password" placeholder="••••••••">
+                </div>
+                <div id="auth-error" style="color:#ff4f6d;font-size:13px;margin-bottom:12px;display:none;"></div>
+                <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitAuth()">
+                    <span id="auth-btn-text">Войти</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="sidebar">
         <div class="logo">Bridge<span>Flow</span></div>
         <div class="nav-item active" onclick="showScreen('dashboard')">⚡ Мои мосты</div>
@@ -1013,41 +1049,47 @@
         <!-- SUCCESS -->
         <div id="screen-success" class="screen">
             <div class="success-screen">
-              <div class="success-icon">⚡</div>
-              <div class="success-title">Мост создан!</div>
-              <div class="success-desc">
-                Осталось один раз настроить вебхук в Bitrix24 — это займёт 30 секунд.
-              </div>
-          
-              <div style="background:#1e2230;border:1px solid #2a2f3f;border-radius:14px;padding:24px;text-align:left;margin-bottom:24px;">
-                <div style="font-size:11px;color:#6b718a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Инструкция</div>
-                
-                <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
-                  1. Зайди в Bitrix24 → <strong>Разработчикам → Исходящие вебхуки</strong>
+                <div class="success-icon">⚡</div>
+                <div class="success-title">Мост создан!</div>
+                <div class="success-desc">
+                    Осталось один раз настроить вебхук в Bitrix24 — это займёт 30 секунд.
                 </div>
-                <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
-                  2. Нажми <strong>Добавить вебхук</strong>
+
+                <div
+                    style="background:#1e2230;border:1px solid #2a2f3f;border-radius:14px;padding:24px;text-align:left;margin-bottom:24px;">
+                    <div
+                        style="font-size:11px;color:#6b718a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">
+                        Инструкция</div>
+
+                    <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                        1. Зайди в Bitrix24 → <strong>Разработчикам → Исходящие вебхуки</strong>
+                    </div>
+                    <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                        2. Нажми <strong>Добавить вебхук</strong>
+                    </div>
+                    <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                        3. Вставь этот URL в поле <strong>"URL вашего обработчика"</strong>:
+                    </div>
+
+                    <div
+                        style="background:#0d0f14;border:1px solid #4f7cff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <code id="webhook-url" style="color:#4f7cff;font-size:13px;word-break:break-all;"></code>
+                        <button onclick="copyUrl()"
+                            style="background:#4f7cff;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;flex-shrink:0;">Копировать</button>
+                    </div>
+
+                    <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                        4. В поле <strong>"События"</strong> выбери:
+                    </div>
+                    <div
+                        style="background:#0d0f14;border:1px solid #2a2f3f;border-radius:8px;padding:10px 16px;margin-bottom:0;">
+                        <code id="webhook-event" style="color:#2dd4a0;font-size:13px;"></code>
+                    </div>
                 </div>
-                <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
-                  3. Вставь этот URL в поле <strong>"URL вашего обработчика"</strong>:
-                </div>
-                
-                <div style="background:#0d0f14;border:1px solid #4f7cff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                  <code id="webhook-url" style="color:#4f7cff;font-size:13px;word-break:break-all;"></code>
-                  <button onclick="copyUrl()" style="background:#4f7cff;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;flex-shrink:0;">Копировать</button>
-                </div>
-          
-                <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
-                  4. В поле <strong>"События"</strong> выбери:
-                </div>
-                <div style="background:#0d0f14;border:1px solid #2a2f3f;border-radius:8px;padding:10px 16px;margin-bottom:0;">
-                  <code id="webhook-event" style="color:#2dd4a0;font-size:13px;"></code>
-                </div>
-              </div>
-          
-              <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
+
+                <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
             </div>
-          </div>
+        </div>
 
     </div>
 
@@ -1229,7 +1271,63 @@
             navigator.clipboard.writeText(url);
             event.target.textContent = '✓ Скопировано';
             setTimeout(() => event.target.textContent = 'Копировать', 2000);
-          }
+        }
+
+        let currentUser = null;
+
+        let currentTab = 'login';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('auth-btn-text').textContent = tab === 'login' ? 'Войти' : 'Зарегистрироваться';
+            document.getElementById('tab-login').style.background = tab === 'login' ? '#4f7cff' : 'transparent';
+            document.getElementById('tab-login').style.color = tab === 'login' ? 'white' : '#6b718a';
+            document.getElementById('tab-register').style.background = tab === 'register' ? '#4f7cff' : 'transparent';
+            document.getElementById('tab-register').style.color = tab === 'register' ? 'white' : '#6b718a';
+        }
+
+        async function submitAuth() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errorEl = document.getElementById('auth-error');
+
+            if (!email || !password) {
+                errorEl.textContent = 'Заполни все поля';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+
+            try {
+                const resp = await fetch(`${API}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await resp.json();
+
+                if (resp.ok) {
+                    currentUser = data;
+                    document.getElementById('screen-auth').style.display = 'none';
+                    loadDashboard();
+                } else {
+                    errorEl.textContent = data.detail || 'Ошибка';
+                    errorEl.style.display = 'block';
+                }
+            } catch (e) {
+                errorEl.textContent = 'Ошибка соединения';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Проверяем Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.getElementById('screen-auth').style.display !== 'none') {
+                submitAuth();
+            }
+        });
     </script>
 </body>
 
