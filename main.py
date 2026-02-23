@@ -3,9 +3,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from routers import bridges, webhooks, logs
 
+
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="BridgeFlow API")
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/ui")
+def ui():
+    return FileResponse("frontend/index.html")
 
 app.add_middleware(
     CORSMiddleware,
