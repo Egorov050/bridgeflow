@@ -36,3 +36,11 @@ app.include_router(logs.router,     prefix="/api/logs",     tags=["Logs"])
 @app.get("/")
 def root():
     return {"status": "ok", "service": "BridgeFlow"}
+
+@app.get("/login")
+def login_page():
+    return FileResponse("frontend/login.html")
+
+@app.get("/app")
+def app_page():
+    return FileResponse("frontend/index.html")
