@@ -774,40 +774,7 @@
 <body>
 
     <!-- AUTH SCREEN -->
-    <div id="screen-auth" style="
-    position:fixed;inset:0;background:#0d0f14;
-    display:flex;align-items:center;justify-content:center;
-    z-index:1000;
-    ">
-        <div style="width:400px;">
-            <div
-                style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;text-align:center;margin-bottom:32px;">
-                Bridge<span style="color:#4f7cff">Flow</span>
-            </div>
-
-            <div style="display:flex;gap:0;margin-bottom:24px;background:#161920;border-radius:10px;padding:4px;">
-                <button id="tab-login" onclick="switchTab('login')"
-                    style="flex:1;padding:8px;border:none;border-radius:8px;background:#4f7cff;color:white;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Войти</button>
-                <button id="tab-register" onclick="switchTab('register')"
-                    style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:#6b718a;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">Регистрация</button>
-            </div>
-
-            <div style="background:#161920;border:1px solid #2a2f3f;border-radius:14px;padding:28px;">
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input class="form-input" id="auth-email" type="email" placeholder="you@company.ru">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Пароль</label>
-                    <input class="form-input" id="auth-password" type="password" placeholder="••••••••">
-                </div>
-                <div id="auth-error" style="color:#ff4f6d;font-size:13px;margin-bottom:12px;display:none;"></div>
-                <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitAuth()">
-                    <span id="auth-btn-text">Войти</span>
-                </button>
-            </div>
-        </div>
-    </div>
+    
 
     <div class="sidebar">
         <div class="logo">Bridge<span>Flow</span></div>
@@ -1111,8 +1078,11 @@
 
         // DASHBOARD
         async function loadDashboard() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = user.user_id || 0;
+            
             const [bridges, logs] = await Promise.all([
-                fetch(`${API}/api/bridges/`).then(r => r.json()),
+                fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json()),
                 fetch(`${API}/api/logs/`).then(r => r.json())
             ]);
 
@@ -1230,41 +1200,50 @@
         // CREATE BRIDGE
         async function createBridge() {
             const body = {
-                name: document.getElementById('bridge-name').value || 'Новый мост',
-                source_type: 'bitrix24',
-                source_config: {
-                    domain: document.getElementById('b24-domain').value,
-                    token: document.getElementById('b24-token').value
-                },
-                event_type: selectedEvent,
-                target_type: 'myteam',
-                target_config: {
-                    token: document.getElementById('vk-token').value,
-                    chat_id: document.getElementById('vk-chat').value
-                },
-                template: document.getElementById('template-area').value
+              name: document.getElementById('bridge-name').value || 'Новый мост',
+              source_type: 'bitrix24',
+              source_config: {
+                domain: document.getElementById('b24-domain').value,
+                token: document.getElementById('b24-token').value
+              },
+              event_type: selectedEvent,
+              target_type: 'myteam',
+              target_config: {
+                token: document.getElementById('vk-token').value,
+                chat_id: document.getElementById('vk-chat').value
+              },
+              template: document.getElementById('template-area').value
             };
-
-            const resp = await fetch(`${API}/api/bridges/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
+          
+            // ✅ Берём user_id из localStorage
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = user.user_id || 0;
+          
+            // ✅ Добавляем user_id в query params
+            const resp = await fetch(`${API}/api/bridges/?user_id=${userId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
             });
-
+          
             if (resp.ok) {
-                // Показываем инструкцию с URL
-                const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
-                document.getElementById('webhook-url').textContent = webhookUrl;
-                document.getElementById('webhook-event').textContent = body.event_type;
-                showScreen('success');
+              const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
+              document.getElementById('webhook-url').textContent = webhookUrl;
+              document.getElementById('webhook-event').textContent = body.event_type;
+              showScreen('success');
             } else {
-                alert('Ошибка при создании моста');
+              alert('Ошибка при создании моста');
             }
-        }
+          }
 
         // INIT
-        loadDashboard();
-        updatePreview();
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.user_id) {
+            window.location.href = '/login';
+        } else {
+            loadDashboard();
+            updatePreview();
+        }
 
         function copyUrl() {
             const url = document.getElementById('webhook-url').textContent;
@@ -1277,14 +1256,7 @@
 
         let currentTab = 'login';
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('auth-btn-text').textContent = tab === 'login' ? 'Войти' : 'Зарегистрироваться';
-            document.getElementById('tab-login').style.background = tab === 'login' ? '#4f7cff' : 'transparent';
-            document.getElementById('tab-login').style.color = tab === 'login' ? 'white' : '#6b718a';
-            document.getElementById('tab-register').style.background = tab === 'register' ? '#4f7cff' : 'transparent';
-            document.getElementById('tab-register').style.color = tab === 'register' ? 'white' : '#6b718a';
-        }
+
 
         async function submitAuth() {
             const email = document.getElementById('auth-email').value;

@@ -7,6 +7,7 @@ class Bridge(Base):
     __tablename__ = "bridges"
 
     id            = Column(Integer, primary_key=True, index=True)
+    user_id       = Column(Integer, ForeignKey("users.id"), nullable=True)  # добавили
     name          = Column(String, nullable=False)
     is_active     = Column(Boolean, default=True)
     source_type   = Column(String)

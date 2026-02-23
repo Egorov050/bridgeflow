@@ -27,15 +27,18 @@ class BridgeUpdate(BaseModel):
     template: Optional[str] = None
 
 @router.get("/")
-def get_bridges(db: Session = Depends(get_db)):
+def get_bridges(user_id: int = 0, db: Session = Depends(get_db)):
+    if user_id:
+        return db.query(Bridge).filter(Bridge.user_id == user_id).all()
     return db.query(Bridge).all()
 
 @router.post("/")
-def create_bridge(data: BridgeCreate, db: Session = Depends(get_db)):
-    bridge = Bridge(**data.model_dump())
+def create_bridge(data: BridgeCreate, user_id: int = 0, db: Session = Depends(get_db)):
+    bridge = Bridge(**data.model_dump(), user_id=user_id)
     db.add(bridge)
     db.commit()
     db.refresh(bridge)
+    return bridge
 
     # Автоматически регистрируем вебхук в Bitrix24
     if bridge.source_type == "bitrix24":
