@@ -42,11 +42,7 @@ def login_page():
 
 @app.get("/app")
 def app_page():
-    return FileResponse("frontend/index.html")
-
-@app.get("/ui")
-def ui():
-    return FileResponse("frontend/index.html")
+    return FileResponse("frontend/app.html")
 
 
 @app.get("/health")
