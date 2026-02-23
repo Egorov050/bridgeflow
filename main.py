@@ -5,7 +5,10 @@ from fastapi.responses import FileResponse
 from database import engine, Base
 from routers import bridges, webhooks, logs, auth
 
+from database import engine, Base, run_migrations
+
 Base.metadata.create_all(bind=engine)
+run_migrations()
 
 app = FastAPI(title="BridgeFlow API")
 
