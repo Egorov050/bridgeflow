@@ -1469,7 +1469,8 @@
 
             // INIT
             window.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-            if (!userData.user_id) {
+            if (!window.currentUser.user_id) {
+
                 window.location.href = '/login';
             } else {
                 updatePreview();
