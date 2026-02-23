@@ -1,11 +1,11 @@
 import requests
 
 def register_webhook(domain: str, token: str, event_type: str, handler_url: str) -> bool:
-    """Автоматически регистрируем вебхук в Bitrix24"""
+    """Регистрируем вебхук через REST API Bitrix24"""
     try:
-        resp = requests.post(
+        resp = requests.get(
             f"https://{domain}/rest/1/{token}/event.bind",
-            json={
+            params={
                 "event": event_type,
                 "handler": handler_url
             }
