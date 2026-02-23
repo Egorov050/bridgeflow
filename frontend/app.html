@@ -1491,55 +1491,6 @@
                 setTimeout(() => event.target.textContent = 'Копировать', 2000);
             }
 
-            let currentUser = null;
-
-            let currentTab = 'login';
-
-
-
-            async function submitAuth() {
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                const errorEl = document.getElementById('auth-error');
-
-                if (!email || !password) {
-                    errorEl.textContent = 'Заполни все поля';
-                    errorEl.style.display = 'block';
-                    return;
-                }
-
-                const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
-
-                try {
-                    const resp = await fetch(`${API}${endpoint}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    const data = await resp.json();
-
-                    if (resp.ok) {
-                        currentUser = data;
-                        document.getElementById('screen-auth').style.display = 'none';
-                        loadDashboard();
-                    } else {
-                        errorEl.textContent = data.detail || 'Ошибка';
-                        errorEl.style.display = 'block';
-                    }
-                } catch (e) {
-                    errorEl.textContent = 'Ошибка соединения';
-                    errorEl.style.display = 'block';
-                }
-            }
-
-            // Проверяем Enter
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && document.getElementById('screen-auth').style.display !== 'none') {
-                    submitAuth();
-                }
-            });
-
             function loadProfile() {
                 const userData = JSON.parse(localStorage.getItem('user') || '{}');
                 document.getElementById('profile-email').textContent = userData.email || '—';
