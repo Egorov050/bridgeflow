@@ -768,6 +768,43 @@
             padding: 40px 0;
             text-align: center;
         }
+
+        .hint-toggle {
+            font-size: 11px;
+            color: var(--accent);
+            cursor: pointer;
+            margin-left: 8px;
+            text-decoration: underline;
+            font-weight: 400;
+          }
+          
+          .hint-box {
+            display: none;
+            background: rgba(79,124,255,0.08);
+            border: 1px solid rgba(79,124,255,0.2);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 8px;
+          }
+          
+          .hint-box.open { display: block; }
+          
+          .existing-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+          }
+          
+          .existing-card-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+          }
     </style>
 </head>
 
@@ -846,114 +883,184 @@
             </div>
 
             <!-- Step 1 -->
-            <div class="step-content" id="step-1">
-                <div class="step-title">Выбери источник</div>
-                <div class="step-desc">Откуда будем получать события?</div>
-                <div class="source-grid">
+            <div class="step-content" id="step-1" style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;">
+                <div>
+                  <div class="step-title">Выбери источник</div>
+                  <div class="step-desc">Откуда будем получать события?</div>
+                  <div class="source-grid">
                     <div class="source-card selected" onclick="selectCard(this, 'source')">
-                        <div class="source-icon">📊</div>
-                        <div class="source-name">Bitrix24</div>
-                        <div class="source-badge">CRM</div>
+                      <div class="source-icon">📊</div>
+                      <div class="source-name">Bitrix24</div>
+                      <div class="source-badge">CRM</div>
                     </div>
                     <div class="source-card disabled">
-                        <div class="source-icon">📋</div>
-                        <div class="source-name">1С</div>
-                        <div class="source-badge">скоро</div>
+                      <div class="source-icon">📋</div>
+                      <div class="source-name">1С</div>
+                      <div class="source-badge">скоро</div>
                     </div>
                     <div class="source-card disabled">
-                        <div class="source-icon">📄</div>
-                        <div class="source-name">Контур</div>
-                        <div class="source-badge">скоро</div>
+                      <div class="source-icon">📄</div>
+                      <div class="source-name">Контур</div>
+                      <div class="source-badge">скоро</div>
                     </div>
-                </div>
-                <hr>
-                <div class="section-label">Подключение к Bitrix24</div>
-                <div class="form-group">
-                    <label class="form-label">Домен портала</label>
+                  </div>
+                  <hr>
+                  <div class="section-label">Подключение к Bitrix24</div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      Домен портала
+                      <span class="hint-toggle" onclick="toggleHint('hint-domain')">? как найти</span>
+                    </label>
                     <input class="form-input" id="b24-domain" placeholder="mycompany.bitrix24.ru">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Токен входящего вебхука</label>
+                    <div class="hint-box" id="hint-domain">
+                      💡 Это адрес твоего Bitrix24 в браузере. Например если ты заходишь на <strong>mycompany.bitrix24.ru</strong> — это и есть домен. Без https:// и без слеша в конце.
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      Токен входящего вебхука
+                      <span class="hint-toggle" onclick="toggleHint('hint-token')">? как найти</span>
+                    </label>
                     <input class="form-input" id="b24-token" type="password" placeholder="swqjwlkrpbysc7kl">
-                </div>
-                <div class="step-footer">
+                    <div class="hint-box" id="hint-token">
+                      💡 Зайди в Bitrix24 → <strong>Разработчикам → Входящие вебхуки</strong> → Добавить вебхук. Дай права на <strong>CRM</strong>. Скопируй токен из строки вида: <br><code style="color:#4f7cff">https://твойпортал/rest/1/<strong>ТОКЕН</strong>/</code>
+                    </div>
+                  </div>
+                  <div class="step-footer">
                     <span></span>
                     <button class="btn btn-primary" onclick="goStep(2)">Далее →</button>
+                  </div>
                 </div>
-            </div>
+              
+                <!-- Правая панель: существующие источники -->
+                <div>
+                  <div class="section-label">Уже подключённые источники</div>
+                  <div id="existing-sources" style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="loading">Загрузка...</div>
+                  </div>
+                </div>
+              </div>
 
             <!-- Step 2 -->
-            <div class="step-content" id="step-2" style="display:none">
-                <div class="step-title">Выбери событие</div>
-                <div class="step-desc">Какое событие запустит уведомление?</div>
-                <div class="events-list">
+            <div class="step-content" id="step-2" style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;display:none">
+                <div>
+                  <div class="step-title">Выбери событие</div>
+                  <div class="step-desc">Какое событие запустит уведомление?</div>
+                  <div class="events-list">
                     <div class="event-item selected" onclick="selectEvent(this, 'ONCRMDEALADD')">
-                        <div class="event-radio"></div>
-                        <div class="event-info">
-                            <div class="event-name">Новая сделка</div>
-                            <div class="event-desc">Срабатывает при создании сделки в CRM</div>
-                        </div>
-                        <div class="event-tag">ONCRMDEALADD</div>
+                      <div class="event-radio"></div>
+                      <div class="event-info">
+                        <div class="event-name">Новая сделка</div>
+                        <div class="event-desc">Срабатывает при создании сделки в CRM</div>
+                      </div>
+                      <div class="event-tag">ONCRMDEALADD</div>
                     </div>
                     <div class="event-item" onclick="selectEvent(this, 'ONCRMDEALUPDATE')">
-                        <div class="event-radio"></div>
-                        <div class="event-info">
-                            <div class="event-name">Смена стадии сделки</div>
-                            <div class="event-desc">Срабатывает при изменении стадии</div>
-                        </div>
-                        <div class="event-tag">ONCRMDEALUPDATE</div>
+                      <div class="event-radio"></div>
+                      <div class="event-info">
+                        <div class="event-name">Изменение сделки</div>
+                        <div class="event-desc">Срабатывает при любом изменении сделки</div>
+                      </div>
+                      <div class="event-tag">ONCRMDEALUPDATE</div>
                     </div>
-                    <div class="event-item" onclick="selectEvent(this, 'ONCRMLEIDADD')">
-                        <div class="event-radio"></div>
-                        <div class="event-info">
-                            <div class="event-name">Новый лид</div>
-                            <div class="event-desc">Срабатывает при создании лида</div>
-                        </div>
-                        <div class="event-tag">ONCRMLEIDADD</div>
+                    <div class="event-item" onclick="selectEvent(this, 'ONCRMLEADADD')">
+                      <div class="event-radio"></div>
+                      <div class="event-info">
+                        <div class="event-name">Новый лид</div>
+                        <div class="event-desc">Срабатывает при создании лида</div>
+                      </div>
+                      <div class="event-tag">ONCRMLEADADD</div>
                     </div>
-                </div>
-                <div class="step-footer">
+                    <div class="event-item" onclick="selectEvent(this, 'ONCRMLEADUPDATE')">
+                      <div class="event-radio"></div>
+                      <div class="event-info">
+                        <div class="event-name">Изменение лида</div>
+                        <div class="event-desc">Срабатывает при изменении лида</div>
+                      </div>
+                      <div class="event-tag">ONCRMLEADUPDATE</div>
+                    </div>
+                    <div class="event-item" onclick="selectEvent(this, 'ONCRMCONTACTADD')">
+                      <div class="event-radio"></div>
+                      <div class="event-info">
+                        <div class="event-name">Новый контакт</div>
+                        <div class="event-desc">Срабатывает при добавлении контакта</div>
+                      </div>
+                      <div class="event-tag">ONCRMCONTACTADD</div>
+                    </div>
+                  </div>
+                  <div class="step-footer">
                     <button class="btn btn-ghost" onclick="goStep(1)">← Назад</button>
                     <button class="btn btn-primary" onclick="goStep(3)">Далее →</button>
+                  </div>
                 </div>
-            </div>
+              
+                <!-- Правая панель: мосты с таким же событием -->
+                <div>
+                  <div class="section-label">Мосты с похожими событиями</div>
+                  <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="loading">Загрузка...</div>
+                  </div>
+                </div>
+              </div>
 
             <!-- Step 3 -->
-            <div class="step-content" id="step-3" style="display:none">
-                <div class="step-title">Выбери получателя</div>
-                <div class="step-desc">Куда отправлять уведомление?</div>
-                <div class="source-grid">
+            <div class="step-content" id="step-3" style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;display:none">
+                <div>
+                  <div class="step-title">Выбери получателя</div>
+                  <div class="step-desc">Куда отправлять уведомление?</div>
+                  <div class="source-grid">
                     <div class="source-card selected" onclick="selectCard(this, 'target')">
-                        <div class="source-icon">💬</div>
-                        <div class="source-name">VK Teams</div>
-                        <div class="source-badge">MyTeam</div>
+                      <div class="source-icon">💬</div>
+                      <div class="source-name">VK Teams</div>
+                      <div class="source-badge">MyTeam</div>
                     </div>
                     <div class="source-card disabled">
-                        <div class="source-icon">✈️</div>
-                        <div class="source-name">Telegram</div>
-                        <div class="source-badge">скоро</div>
+                      <div class="source-icon">✈️</div>
+                      <div class="source-name">Telegram</div>
+                      <div class="source-badge">скоро</div>
                     </div>
                     <div class="source-card disabled">
-                        <div class="source-icon">💼</div>
-                        <div class="source-name">Slack</div>
-                        <div class="source-badge">скоро</div>
+                      <div class="source-icon">💼</div>
+                      <div class="source-name">Slack</div>
+                      <div class="source-badge">скоро</div>
                     </div>
-                </div>
-                <hr>
-                <div class="section-label">Подключение к VK Teams</div>
-                <div class="form-group">
-                    <label class="form-label">Токен бота</label>
+                  </div>
+                  <hr>
+                  <div class="section-label">Подключение к VK Teams</div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      Токен бота
+                      <span class="hint-toggle" onclick="toggleHint('hint-vk-token')">? как найти</span>
+                    </label>
                     <input class="form-input" id="vk-token" type="password" placeholder="001.xxx...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Chat ID получателя</label>
+                    <div class="hint-box" id="hint-vk-token">
+                      💡 Зайди в VK Teams → <strong>Мессенджер → Администрирование → Боты</strong> → Создай бота. Скопируй токен. Или используй существующего бота — токен в настройках.
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      Chat ID получателя
+                      <span class="hint-toggle" onclick="toggleHint('hint-vk-chat')">? как найти</span>
+                    </label>
                     <input class="form-input" id="vk-chat" placeholder="user@company.ru">
-                </div>
-                <div class="step-footer">
+                    <div class="hint-box" id="hint-vk-chat">
+                      💡 Это email пользователя в VK Teams, например <strong>ivan@company.ru</strong>. Или ID группового чата — его можно найти в URL чата.
+                    </div>
+                  </div>
+                  <div class="step-footer">
                     <button class="btn btn-ghost" onclick="goStep(2)">← Назад</button>
                     <button class="btn btn-primary" onclick="goStep(4)">Далее →</button>
+                  </div>
                 </div>
-            </div>
+              
+                <!-- Правая панель: существующие получатели -->
+                <div>
+                  <div class="section-label">Уже подключённые получатели</div>
+                  <div id="existing-targets" style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="loading">Загрузка...</div>
+                  </div>
+                </div>
+              </div>
 
             <!-- Step 4 -->
             <div class="step-content" id="step-4" style="display:none">
@@ -1189,16 +1296,18 @@
         // STEPS
         function goStep(n) {
             [1, 2, 3, 4].forEach(i => {
-                document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none';
-                const ind = document.getElementById('si-' + i);
-                ind.classList.remove('active', 'done');
-                if (i < n) ind.classList.add('done');
-                if (i === n) ind.classList.add('active');
-                if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
+              document.getElementById('step-' + i).style.display = i === n ? 'grid' : 'none';
+              // шаг 4 без грида
+              if (i === 4) document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none';
+              const ind = document.getElementById('si-' + i);
+              ind.classList.remove('active', 'done');
+              if (i < n) ind.classList.add('done');
+              if (i === n) ind.classList.add('active');
+              if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
             });
-            // Сохраняем шаг
             localStorage.setItem('currentStep', n);
-        }
+            if (n <= 3) loadExistingConnections();
+          }
 
         function selectCard(el, type) {
             el.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.remove('selected'));
@@ -1357,6 +1466,34 @@
             localStorage.removeItem('user');
             window.location.href = '/login';
         }
+
+        function toggleHint(id) {
+            document.getElementById(id).classList.toggle('open');
+          }
+          
+          async function loadExistingConnections() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = user.user_id || 0;
+            const bridges = await fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json());
+          
+            // Sources
+            const domains = [...new Set(bridges.map(b => b.source_config?.domain).filter(Boolean))];
+            document.getElementById('existing-sources').innerHTML = domains.length
+              ? domains.map(d => `<div class="existing-card"><div class="existing-card-label">Bitrix24</div>${d}</div>`).join('')
+              : '<div style="font-size:13px;color:var(--muted)">Нет подключённых источников</div>';
+          
+            // Events
+            const events = [...new Set(bridges.map(b => b.event_type).filter(Boolean))];
+            document.getElementById('existing-events').innerHTML = events.length
+              ? events.map(e => `<div class="existing-card"><div class="existing-card-label">Используется в ${bridges.filter(b=>b.event_type===e).length} мостах</div>${e}</div>`).join('')
+              : '<div style="font-size:13px;color:var(--muted)">Нет настроенных событий</div>';
+          
+            // Targets
+            const chats = [...new Set(bridges.map(b => b.target_config?.chat_id).filter(Boolean))];
+            document.getElementById('existing-targets').innerHTML = chats.length
+              ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
+              : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
+          }
     </script>
 </body>
 
