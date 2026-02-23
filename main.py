@@ -9,6 +9,15 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="BridgeFlow API")
 
+from fastapi import Request
+from fastapi.responses import Response
+
+@app.middleware("http")
+async def remove_csp(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Content-Security-Policy"] = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
