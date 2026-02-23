@@ -34,7 +34,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "BridgeFlow"}
+    return FileResponse("frontend/landing.html")
 
 @app.get("/login")
 def login_page():
@@ -47,3 +47,8 @@ def app_page():
 @app.get("/ui")
 def ui():
     return FileResponse("frontend/index.html")
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
