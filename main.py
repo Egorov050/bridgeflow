@@ -12,6 +12,10 @@ app = FastAPI(title="BridgeFlow API")
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from routers import bridges, webhooks, logs, auth
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/ui")
