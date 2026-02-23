@@ -29,6 +29,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class User(Base):
+    __tablename__ = "users"
+
+    id            = Column(Integer, primary_key=True, index=True)
+    email         = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    created_at    = Column(DateTime, server_default=func.now())
+
 app.include_router(bridges.router,  prefix="/api/bridges",  tags=["Bridges"])
 app.include_router(webhooks.router, prefix="/api/webhooks", tags=["Webhooks"])
 app.include_router(logs.router,     prefix="/api/logs",     tags=["Logs"])
