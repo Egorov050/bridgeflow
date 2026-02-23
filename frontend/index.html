@@ -1013,13 +1013,41 @@
         <!-- SUCCESS -->
         <div id="screen-success" class="screen">
             <div class="success-screen">
-                <div class="success-icon">⚡</div>
-                <div class="success-title">Мост активирован!</div>
-                <div class="success-desc">Соединение настроено и работает.<br>Уведомления будут приходить мгновенно.
+              <div class="success-icon">⚡</div>
+              <div class="success-title">Мост создан!</div>
+              <div class="success-desc">
+                Осталось один раз настроить вебхук в Bitrix24 — это займёт 30 секунд.
+              </div>
+          
+              <div style="background:#1e2230;border:1px solid #2a2f3f;border-radius:14px;padding:24px;text-align:left;margin-bottom:24px;">
+                <div style="font-size:11px;color:#6b718a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Инструкция</div>
+                
+                <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                  1. Зайди в Bitrix24 → <strong>Разработчикам → Исходящие вебхуки</strong>
                 </div>
-                <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
+                <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                  2. Нажми <strong>Добавить вебхук</strong>
+                </div>
+                <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                  3. Вставь этот URL в поле <strong>"URL вашего обработчика"</strong>:
+                </div>
+                
+                <div style="background:#0d0f14;border:1px solid #4f7cff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                  <code id="webhook-url" style="color:#4f7cff;font-size:13px;word-break:break-all;"></code>
+                  <button onclick="copyUrl()" style="background:#4f7cff;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;flex-shrink:0;">Копировать</button>
+                </div>
+          
+                <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                  4. В поле <strong>"События"</strong> выбери:
+                </div>
+                <div style="background:#0d0f14;border:1px solid #2a2f3f;border-radius:8px;padding:10px 16px;margin-bottom:0;">
+                  <code id="webhook-event" style="color:#2dd4a0;font-size:13px;"></code>
+                </div>
+              </div>
+          
+              <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
             </div>
-        </div>
+          </div>
 
     </div>
 
@@ -1182,6 +1210,10 @@
             });
 
             if (resp.ok) {
+                // Показываем инструкцию с URL
+                const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
+                document.getElementById('webhook-url').textContent = webhookUrl;
+                document.getElementById('webhook-event').textContent = body.event_type;
                 showScreen('success');
             } else {
                 alert('Ошибка при создании моста');
@@ -1191,6 +1223,13 @@
         // INIT
         loadDashboard();
         updatePreview();
+
+        function copyUrl() {
+            const url = document.getElementById('webhook-url').textContent;
+            navigator.clipboard.writeText(url);
+            event.target.textContent = '✓ Скопировано';
+            setTimeout(() => event.target.textContent = 'Копировать', 2000);
+          }
     </script>
 </body>
 
