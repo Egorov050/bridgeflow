@@ -805,6 +805,11 @@
             color: var(--muted);
             margin-bottom: 4px;
           }
+
+          @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+          }
     </style>
 </head>
 
@@ -1253,31 +1258,62 @@
                 return;
             }
 
-            list.innerHTML = bridges.map(b => `
-    <div class="bridge-card">
-      <div class="bridge-status ${b.is_active ? 'active' : 'inactive'}"></div>
-      <div class="bridge-flow">
-        <div class="bridge-node">
-          <div class="source-label">Источник</div>
-          ${b.source_type} · ${b.event_type}
-        </div>
-        <div class="bridge-arrow"></div>
-        <div class="bridge-node">
-          <div class="source-label">Получатель</div>
-          ${b.target_type} · ${b.target_config?.chat_id || ''}
-        </div>
-      </div>
-      <div class="bridge-meta">
-        <strong>${b.name}</strong>
-        ${new Date(b.created_at).toLocaleDateString('ru')}
-      </div>
-      <div class="bridge-actions">
-        <button class="toggle ${b.is_active ? '' : 'off'}" onclick="toggleBridge(${b.id}, ${b.is_active})"></button>
-        <button class="btn btn-danger btn-sm" onclick="deleteBridge(${b.id})">✕</button>
-      </div>
-    </div>
-  `).join('');
-        }
+            list.innerHTML = bridges.map(b => {
+                const bridgeLogs = logs.filter(l => l.bridge_id === b.id);
+                const lastLog = bridgeLogs[0];
+                
+                let statusColor, statusGlow, statusTitle;
+                if (!lastLog) {
+                  statusColor = '#ff4f6d';
+                  statusGlow = 'rgba(255,79,109,0.4)';
+                  statusTitle = 'Ни одного события';
+                } else {
+                  const lastDate = new Date(lastLog.triggered_at + 'Z');
+                  const diffDays = (new Date() - lastDate) / (1000 * 60 * 60 * 24);
+                  if (diffDays < 1) {
+                    statusColor = '#2dd4a0';
+                    statusGlow = 'rgba(45,212,160,0.4)';
+                    statusTitle = 'Активен сегодня';
+                  } else if (diffDays < 7) {
+                    statusColor = '#f59e0b';
+                    statusGlow = 'rgba(245,158,11,0.4)';
+                    statusTitle = 'Нет событий больше суток';
+                  } else {
+                    statusColor = '#ff4f6d';
+                    statusGlow = 'rgba(255,79,109,0.4)';
+                    statusTitle = 'Нет событий больше недели';
+                  }
+                }
+              
+                return `
+                <div class="bridge-card">
+                  <div title="${statusTitle}" style="
+                    width:10px;height:10px;border-radius:50%;flex-shrink:0;
+                    background:${statusColor};
+                    box-shadow:0 0 6px ${statusGlow};
+                    animation:${b.is_active ? 'blink 3s ease-in-out infinite' : 'none'};
+                  "></div>
+                  <div class="bridge-flow">
+                    <div class="bridge-node">
+                      <div class="source-label">Источник</div>
+                      ${b.source_type} · ${b.event_type}
+                    </div>
+                    <div class="bridge-arrow"></div>
+                    <div class="bridge-node">
+                      <div class="source-label">Получатель</div>
+                      ${b.target_type} · ${b.target_config?.chat_id || ''}
+                    </div>
+                  </div>
+                  <div class="bridge-meta">
+                    <strong>${b.name}</strong>
+                    ${new Date(b.created_at).toLocaleDateString('ru')}
+                  </div>
+                  <div class="bridge-actions">
+                    <button class="toggle ${b.is_active ? '' : 'off'}" onclick="toggleBridge(${b.id}, ${b.is_active})"></button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteBridge(${b.id})">✕</button>
+                  </div>
+                </div>`;
+              }).join('');
 
         async function toggleBridge(id, isActive) {
             await fetch(`${API}/api/bridges/${id}`, {
