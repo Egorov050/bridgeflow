@@ -781,6 +781,7 @@
         <div class="nav-item active" onclick="showScreen('dashboard')">⚡ Мои мосты</div>
         <div class="nav-item" onclick="showScreen('create')">＋ Создать мост</div>
         <div class="nav-item" onclick="showScreen('logs')">📋 Логи</div>
+        <div class="nav-item" onclick="showScreen('profile')" style="margin-top:auto;">👤 Профиль</div>
     </div>
 
     <div class="main">
@@ -1057,6 +1058,30 @@
                 <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
             </div>
         </div>
+        <!-- PROFILE -->
+        <div id="screen-profile" class="screen">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Личный кабинет</div>
+                    <div class="page-subtitle" id="profile-email">—</div>
+                </div>
+            </div>
+
+            <div style="max-width:480px;display:flex;flex-direction:column;gap:12px;">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+                    <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Email</div>
+                    <div style="font-size:16px;font-weight:500;" id="profile-email-val">—</div>
+                </div>
+
+                <button class="btn btn-ghost" style="justify-content:center;" onclick="logout()">
+                    🚪 Выйти из аккаунта
+                </button>
+
+                <button class="btn btn-danger" style="justify-content:center;" onclick="deleteAccount()">
+                    🗑 Удалить аккаунт
+                </button>
+            </div>
+        </div>
 
     </div>
 
@@ -1073,7 +1098,8 @@
             if (idx[name] !== undefined) document.querySelectorAll('.nav-item')[idx[name]].classList.add('active');
             if (name === 'dashboard') loadDashboard();
             if (name === 'logs') loadLogs();
-            if (name === 'create') { goStep(1); updatePreview(); }
+            if (name === 'create') { goStep(1); updatePreview();
+            if (name === 'profile') loadProfile(); }
         }
 
         // DASHBOARD
@@ -1300,6 +1326,25 @@
                 submitAuth();
             }
         });
+
+        function loadProfile() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('profile-email').textContent = user.email || '—';
+            document.getElementById('profile-email-val').textContent = user.email || '—';
+        }
+        
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+        
+        async function deleteAccount() {
+            if (!confirm('Удалить аккаунт? Все мосты тоже удалятся.')) return;
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            await fetch(`${API}/api/auth/delete/${user.user_id}`, { method: 'DELETE' });
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
     </script>
 </body>
 
