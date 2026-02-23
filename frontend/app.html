@@ -1522,6 +1522,13 @@
               ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
               : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
           }
+
+        function showProfile() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const email = user.email || '—';
+            document.getElementById('profile-email').textContent = email;
+            document.getElementById('profile-email-big').textContent = email;
+        }    
     </script>
 </body>
 
