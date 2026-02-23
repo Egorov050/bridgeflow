@@ -1098,8 +1098,11 @@
             if (idx[name] !== undefined) document.querySelectorAll('.nav-item')[idx[name]].classList.add('active');
             if (name === 'dashboard') loadDashboard();
             if (name === 'logs') loadLogs();
-            if (name === 'create') { goStep(1); updatePreview();
-            if (name === 'profile') loadProfile(); }
+            if (name === 'create') { goStep(1); updatePreview(); }
+            if (name === 'profile') showProfile();
+            
+            // Сохраняем текущий экран
+            localStorage.setItem('currentScreen', name);
         }
 
         // DASHBOARD
@@ -1193,6 +1196,8 @@
                 if (i === n) ind.classList.add('active');
                 if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
             });
+            // Сохраняем шаг
+            localStorage.setItem('currentStep', n);
         }
 
         function selectCard(el, type) {
@@ -1267,8 +1272,15 @@
         if (!user.user_id) {
             window.location.href = '/login';
         } else {
-            loadDashboard();
             updatePreview();
+            // Восстанавливаем состояние
+            const savedScreen = localStorage.getItem('currentScreen') || 'dashboard';
+            const savedStep = parseInt(localStorage.getItem('currentStep') || '1');
+            
+            showScreen(savedScreen);
+            if (savedScreen === 'create') {
+                goStep(savedStep);
+            }
         }
 
         function copyUrl() {
