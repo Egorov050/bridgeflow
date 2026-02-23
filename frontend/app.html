@@ -1238,9 +1238,9 @@
             
             const [bridges, logs] = await Promise.all([
                 fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json()),
-                fetch(`${API}/api/logs/`).then(r => r.json())
+                fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json())
             ]);
-
+        
             const active = bridges.filter(b => b.is_active).length;
             document.getElementById('stat-active').textContent = active;
             document.getElementById('stat-total').textContent = bridges.length;
