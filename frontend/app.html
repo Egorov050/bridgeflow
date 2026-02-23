@@ -1,1554 +1,1616 @@
 <!DOCTYPE html>
 <html lang="ru">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BridgeFlow</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0d0f14;
-            --surface: #161920;
-            --surface2: #1e2230;
-            --border: #2a2f3f;
-            --accent: #4f7cff;
-            --green: #2dd4a0;
-            --text: #e8eaf2;
-            --muted: #6b718a;
-            --danger: #ff4f6d;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 220px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 28px 0;
-        }
-
-        .logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-            padding: 0 24px 32px;
-        }
-
-        .logo span {
-            color: var(--accent);
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 24px;
-            color: var(--muted);
-            font-size: 14px;
-            cursor: pointer;
-            border-left: 2px solid transparent;
-            transition: all 0.15s;
-        }
-
-        .nav-item:hover {
-            color: var(--text);
-            background: var(--surface2);
-        }
-
-        .nav-item.active {
-            color: var(--accent);
-            border-left-color: var(--accent);
-            background: rgba(79, 124, 255, 0.07);
-        }
-
-        .main {
-            margin-left: 220px;
-            padding: 40px 48px;
-        }
-
-        .screen {
-            display: none;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BridgeFlow</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
+        <style>
+            :root {
+                --bg: #0d0f14;
+                --surface: #161920;
+                --surface2: #1e2230;
+                --border: #2a2f3f;
+                --accent: #4f7cff;
+                --green: #2dd4a0;
+                --text: #e8eaf2;
+                --muted: #6b718a;
+                --danger: #ff4f6d;
             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 36px;
-        }
-
-        .page-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-        }
-
-        .page-subtitle {
-            color: var(--muted);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.15s;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #3d6aff;
-        }
-
-        .btn-ghost {
-            background: var(--surface2);
-            color: var(--muted);
-            border: 1px solid var(--border);
-        }
-
-        .btn-ghost:hover {
-            color: var(--text);
-        }
-
-        .btn-danger {
-            background: rgba(255, 79, 109, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(255, 79, 109, 0.2);
-        }
-
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 13px;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px 24px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-family: 'Syne', sans-serif;
-            font-size: 32px;
-            font-weight: 700;
-            margin-top: 6px;
-        }
-
-        .stat-value.green {
-            color: var(--green);
-        }
-
-        .stat-value.accent {
-            color: var(--accent);
-        }
-
-        .bridges-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .bridge-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px 24px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: border-color 0.15s;
-        }
-
-        .bridge-card:hover {
-            border-color: var(--accent);
-        }
-
-        .bridge-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .bridge-status.active {
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-        }
-
-        .bridge-status.inactive {
-            background: var(--muted);
-        }
-
-        .bridge-flow {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .bridge-node {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .bridge-node .source-label {
-            font-size: 10px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-
-        .bridge-arrow {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .bridge-arrow::before {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .bridge-arrow::after {
-            content: '▶';
-            font-size: 10px;
-            color: var(--accent);
-        }
-
-        .bridge-meta {
-            font-size: 12px;
-            color: var(--muted);
-            flex-shrink: 0;
-            text-align: right;
-        }
-
-        .bridge-meta strong {
-            display: block;
-            color: var(--text);
-            font-size: 13px;
-        }
-
-        .bridge-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .toggle {
-            width: 36px;
-            height: 20px;
-            background: var(--green);
-            border-radius: 10px;
-            position: relative;
-            cursor: pointer;
-            border: none;
-            transition: background 0.2s;
-        }
-
-        .toggle.off {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .toggle.off::after {
-            right: auto;
-            left: 2px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 80px 0;
-            color: var(--muted);
-        }
-
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .empty-state h3 {
-            font-family: 'Syne', sans-serif;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        /* CREATE */
-        .create-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-
-        .back-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            color: var(--muted);
-            transition: all 0.15s;
-        }
-
-        .back-btn:hover {
-            color: var(--text);
-        }
-
-        .steps-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .step-num {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .step-item.active .step-num {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .step-item.done .step-num {
-            background: var(--green);
-            border-color: var(--green);
-            color: white;
-        }
-
-        .step-item.active {
-            color: var(--text);
-        }
-
-        .step-item.done {
-            color: var(--green);
-        }
-
-        .step-line {
-            width: 48px;
-            height: 1px;
-            background: var(--border);
-            margin: 0 8px;
-        }
-
-        .step-line.done {
-            background: var(--green);
-        }
-
-        .step-content {
-            max-width: 620px;
-        }
-
-        .step-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .step-desc {
-            color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 28px;
-        }
-
-        .source-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .source-card {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.15s;
-            text-align: center;
-        }
-
-        .source-card:hover {
-            border-color: var(--accent);
-        }
-
-        .source-card.selected {
-            border-color: var(--accent);
-            background: rgba(79, 124, 255, 0.08);
-        }
-
-        .source-card.disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .source-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-
-        .source-name {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .source-badge {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-label {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .form-input {
-            width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 11px 14px;
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.15s;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent);
-        }
-
-        .events-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .event-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: var(--surface);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 18px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .event-item:hover {
-            border-color: var(--accent);
-        }
-
-        .event-item.selected {
-            border-color: var(--accent);
-            background: rgba(79, 124, 255, 0.08);
-        }
-
-        .event-radio {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.15s;
-        }
-
-        .event-item.selected .event-radio {
-            border-color: var(--accent);
-            background: var(--accent);
-        }
-
-        .event-item.selected .event-radio::after {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: white;
-            display: block;
-        }
-
-        .event-info {
-            flex: 1;
-        }
-
-        .event-name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .event-desc {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .event-tag {
-            font-size: 11px;
-            background: rgba(79, 124, 255, 0.1);
-            color: var(--accent);
-            padding: 2px 8px;
-            border-radius: 20px;
-        }
-
-        .vars-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .var-chip {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-family: monospace;
-            color: var(--accent);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .var-chip:hover {
-            background: rgba(79, 124, 255, 0.1);
-            border-color: var(--accent);
-        }
-
-        .template-area {
-            width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px;
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            outline: none;
-            resize: vertical;
-            min-height: 120px;
-            transition: border-color 0.15s;
-            line-height: 1.6;
-        }
-
-        .template-area:focus {
-            border-color: var(--accent);
-        }
-
-        .preview-box {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-top: 16px;
-            font-size: 13px;
-            line-height: 1.7;
-            white-space: pre-wrap;
-        }
-
-        .preview-label {
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .step-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 28px 0;
-        }
-
-        /* LOGS */
-        .logs-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .logs-table th {
-            text-align: left;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            padding: 0 16px 12px;
-        }
-
-        .logs-table td {
-            padding: 14px 16px;
-            border-top: 1px solid var(--border);
-            font-size: 13px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge.success {
-            background: rgba(45, 212, 160, 0.1);
-            color: var(--green);
-        }
-
-        .badge.error {
-            background: rgba(255, 79, 109, 0.1);
-            color: var(--danger);
-        }
-
-        .success-screen {
-            text-align: center;
-            max-width: 480px;
-            margin: 80px auto 0;
-        }
-
-        .success-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-        }
-
-        .success-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .success-desc {
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .loading {
-            color: var(--muted);
-            font-size: 14px;
-            padding: 40px 0;
-            text-align: center;
-        }
-
-        .hint-toggle {
-            font-size: 11px;
-            color: var(--accent);
-            cursor: pointer;
-            margin-left: 8px;
-            text-decoration: underline;
-            font-weight: 400;
-        }
-
-        .hint-box {
-            display: none;
-            background: rgba(79, 124, 255, 0.08);
-            border: 1px solid rgba(79, 124, 255, 0.2);
-            border-radius: 8px;
-            padding: 12px 14px;
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.6;
-            margin-top: 8px;
-        }
-
-        .hint-box.open {
-            display: block;
-        }
-
-        .existing-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-size: 13px;
-        }
-
-        .existing-card-label {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
 
-            50% {
-                opacity: 0.3;
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                min-height: 100vh;
             }
-        }
-    </style>
-</head>
 
-<body>
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 220px;
+                background: var(--surface);
+                border-right: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                padding: 28px 0;
+            }
 
-    <!-- AUTH SCREEN -->
+            .logo {
+                font-family: 'Syne', sans-serif;
+                font-weight: 800;
+                font-size: 20px;
+                padding: 0 24px 32px;
+            }
+
+            .logo span {
+                color: var(--accent);
+            }
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 24px;
+                color: var(--muted);
+                font-size: 14px;
+                cursor: pointer;
+                border-left: 2px solid transparent;
+                transition: all 0.15s;
+            }
+
+            .nav-item:hover {
+                color: var(--text);
+                background: var(--surface2);
+            }
+
+            .nav-item.active {
+                color: var(--accent);
+                border-left-color: var(--accent);
+                background: rgba(79, 124, 255, 0.07);
+            }
+
+            .main {
+                margin-left: 220px;
+                padding: 40px 48px;
+            }
+
+            .screen {
+                display: none;
+                animation: fadeIn 0.25s ease;
+            }
+
+            .screen.active {
+                display: block;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 36px;
+            }
+
+            .page-title {
+                font-family: 'Syne', sans-serif;
+                font-size: 28px;
+                font-weight: 700;
+            }
+
+            .page-subtitle {
+                color: var(--muted);
+                font-size: 14px;
+                margin-top: 4px;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 20px;
+                border-radius: 10px;
+                font-family: 'DM Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                transition: all 0.15s;
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .btn-primary:hover {
+                background: #3d6aff;
+            }
+
+            .btn-ghost {
+                background: var(--surface2);
+                color: var(--muted);
+                border: 1px solid var(--border);
+            }
+
+            .btn-ghost:hover {
+                color: var(--text);
+            }
+
+            .btn-danger {
+                background: rgba(255, 79, 109, 0.1);
+                color: var(--danger);
+                border: 1px solid rgba(255, 79, 109, 0.2);
+            }
+
+            .btn-sm {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+                margin-bottom: 32px;
+            }
+
+            .stat-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 20px 24px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-value {
+                font-family: 'Syne', sans-serif;
+                font-size: 32px;
+                font-weight: 700;
+                margin-top: 6px;
+            }
+
+            .stat-value.green {
+                color: var(--green);
+            }
+
+            .stat-value.accent {
+                color: var(--accent);
+            }
+
+            .bridges-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .bridge-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 20px 24px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                transition: border-color 0.15s;
+            }
+
+            .bridge-card:hover {
+                border-color: var(--accent);
+            }
+
+            .bridge-status {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .bridge-status.active {
+                background: var(--green);
+                box-shadow: 0 0 8px var(--green);
+            }
+
+            .bridge-status.inactive {
+                background: var(--muted);
+            }
+
+            .bridge-flow {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 1;
+            }
+
+            .bridge-node {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 8px 14px;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            .bridge-node .source-label {
+                font-size: 10px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 2px;
+            }
+
+            .bridge-arrow {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .bridge-arrow::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 1px;
+                background: var(--border);
+            }
+
+            .bridge-arrow::after {
+                content: '▶';
+                font-size: 10px;
+                color: var(--accent);
+            }
+
+            .bridge-meta {
+                font-size: 12px;
+                color: var(--muted);
+                flex-shrink: 0;
+                text-align: right;
+            }
+
+            .bridge-meta strong {
+                display: block;
+                color: var(--text);
+                font-size: 13px;
+            }
+
+            .bridge-actions {
+                display: flex;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+
+            .toggle {
+                width: 36px;
+                height: 20px;
+                background: var(--green);
+                border-radius: 10px;
+                position: relative;
+                cursor: pointer;
+                border: none;
+                transition: background 0.2s;
+            }
+
+            .toggle.off {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+            }
+
+            .toggle::after {
+                content: '';
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border-radius: 50%;
+                transition: all 0.2s;
+            }
+
+            .toggle.off::after {
+                right: auto;
+                left: 2px;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 80px 0;
+                color: var(--muted);
+            }
+
+            .empty-state .icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+            }
+
+            .empty-state h3 {
+                font-family: 'Syne', sans-serif;
+                color: var(--text);
+                margin-bottom: 8px;
+            }
+
+            /* CREATE */
+            .create-header {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 40px;
+            }
+
+            .back-btn {
+                width: 36px;
+                height: 36px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 18px;
+                color: var(--muted);
+                transition: all 0.15s;
+            }
+
+            .back-btn:hover {
+                color: var(--text);
+            }
+
+            .steps-bar {
+                display: flex;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+
+            .step-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: var(--muted);
+            }
+
+            .step-num {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 600;
+                transition: all 0.2s;
+            }
+
+            .step-item.active .step-num {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: white;
+            }
+
+            .step-item.done .step-num {
+                background: var(--green);
+                border-color: var(--green);
+                color: white;
+            }
+
+            .step-item.active {
+                color: var(--text);
+            }
+
+            .step-item.done {
+                color: var(--green);
+            }
+
+            .step-line {
+                width: 48px;
+                height: 1px;
+                background: var(--border);
+                margin: 0 8px;
+            }
+
+            .step-line.done {
+                background: var(--green);
+            }
+
+            .step-content {
+                max-width: 620px;
+            }
+
+            .step-title {
+                font-family: 'Syne', sans-serif;
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 6px;
+            }
+
+            .step-desc {
+                color: var(--muted);
+                font-size: 14px;
+                margin-bottom: 28px;
+            }
+
+            .source-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+
+            .source-card {
+                background: var(--surface);
+                border: 2px solid var(--border);
+                border-radius: 14px;
+                padding: 20px;
+                cursor: pointer;
+                transition: all 0.15s;
+                text-align: center;
+            }
+
+            .source-card:hover {
+                border-color: var(--accent);
+            }
+
+            .source-card.selected {
+                border-color: var(--accent);
+                background: rgba(79, 124, 255, 0.08);
+            }
+
+            .source-card.disabled {
+                opacity: 0.35;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+            .source-icon {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            .source-name {
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            .source-badge {
+                font-size: 10px;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-label {
+                font-size: 13px;
+                color: var(--muted);
+                margin-bottom: 6px;
+                display: block;
+            }
+
+            .form-input {
+                width: 100%;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 11px 14px;
+                color: var(--text);
+                font-family: 'DM Sans', sans-serif;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.15s;
+            }
+
+            .form-input:focus {
+                border-color: var(--accent);
+            }
+
+            .events-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+
+            .event-item {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                background: var(--surface);
+                border: 2px solid var(--border);
+                border-radius: 12px;
+                padding: 14px 18px;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+
+            .event-item:hover {
+                border-color: var(--accent);
+            }
+
+            .event-item.selected {
+                border-color: var(--accent);
+                background: rgba(79, 124, 255, 0.08);
+            }
+
+            .event-radio {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                border: 2px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: all 0.15s;
+            }
+
+            .event-item.selected .event-radio {
+                border-color: var(--accent);
+                background: var(--accent);
+            }
+
+            .event-item.selected .event-radio::after {
+                content: '';
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: white;
+                display: block;
+            }
+
+            .event-info {
+                flex: 1;
+            }
+
+            .event-name {
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .event-desc {
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+
+            .event-tag {
+                font-size: 11px;
+                background: rgba(79, 124, 255, 0.1);
+                color: var(--accent);
+                padding: 2px 8px;
+                border-radius: 20px;
+            }
+
+            .vars-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            .var-chip {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                padding: 4px 10px;
+                font-size: 12px;
+                font-family: monospace;
+                color: var(--accent);
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+
+            .var-chip:hover {
+                background: rgba(79, 124, 255, 0.1);
+                border-color: var(--accent);
+            }
+
+            .template-area {
+                width: 100%;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 14px;
+                color: var(--text);
+                font-family: 'DM Sans', sans-serif;
+                font-size: 14px;
+                outline: none;
+                resize: vertical;
+                min-height: 120px;
+                transition: border-color 0.15s;
+                line-height: 1.6;
+            }
+
+            .template-area:focus {
+                border-color: var(--accent);
+            }
+
+            .preview-box {
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px 18px;
+                margin-top: 16px;
+                font-size: 13px;
+                line-height: 1.7;
+                white-space: pre-wrap;
+            }
+
+            .preview-label {
+                font-size: 11px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+            }
+
+            .step-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 32px;
+                padding-top: 24px;
+                border-top: 1px solid var(--border);
+            }
+
+            .section-label {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--muted);
+                margin-bottom: 12px;
+            }
+
+            hr {
+                border: none;
+                border-top: 1px solid var(--border);
+                margin: 28px 0;
+            }
+
+            /* LOGS */
+            .logs-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .logs-table th {
+                text-align: left;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--muted);
+                padding: 0 16px 12px;
+            }
+
+            .logs-table td {
+                padding: 14px 16px;
+                border-top: 1px solid var(--border);
+                font-size: 13px;
+            }
+
+            .badge {
+                display: inline-block;
+                padding: 3px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 600;
+            }
+
+            .badge.success {
+                background: rgba(45, 212, 160, 0.1);
+                color: var(--green);
+            }
+
+            .badge.error {
+                background: rgba(255, 79, 109, 0.1);
+                color: var(--danger);
+            }
+
+            .success-screen {
+                text-align: center;
+                max-width: 480px;
+                margin: 80px auto 0;
+            }
+
+            .success-icon {
+                font-size: 64px;
+                margin-bottom: 24px;
+            }
+
+            .success-title {
+                font-family: 'Syne', sans-serif;
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .success-desc {
+                color: var(--muted);
+                font-size: 15px;
+                line-height: 1.6;
+                margin-bottom: 32px;
+            }
+
+            .loading {
+                color: var(--muted);
+                font-size: 14px;
+                padding: 40px 0;
+                text-align: center;
+            }
+
+            .hint-toggle {
+                font-size: 11px;
+                color: var(--accent);
+                cursor: pointer;
+                margin-left: 8px;
+                text-decoration: underline;
+                font-weight: 400;
+            }
+
+            .hint-box {
+                display: none;
+                background: rgba(79, 124, 255, 0.08);
+                border: 1px solid rgba(79, 124, 255, 0.2);
+                border-radius: 8px;
+                padding: 12px 14px;
+                font-size: 13px;
+                color: var(--muted);
+                line-height: 1.6;
+                margin-top: 8px;
+            }
+
+            .hint-box.open {
+                display: block;
+            }
+
+            .existing-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+
+            .existing-card-label {
+                font-size: 11px;
+                color: var(--muted);
+                margin-bottom: 4px;
+            }
+
+            @keyframes blink {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.3;
+                }
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- AUTH SCREEN -->
 
 
-    <div class="sidebar">
-        <div class="logo">Bridge<span>Flow</span></div>
-        <div class="nav-item active" onclick="showScreen('dashboard')">⚡ Мои мосты</div>
-        <div class="nav-item" onclick="showScreen('create')">＋ Создать мост</div>
-        <div class="nav-item" onclick="showScreen('logs')">📋 Логи</div>
-        <div class="nav-item" onclick="showScreen('profile')" style="margin-top:auto;">👤 Профиль</div>
-    </div>
-
-    <div class="main">
-
-        <!-- DASHBOARD -->
-        <div id="screen-dashboard" class="screen active">
-            <div class="page-header">
-                <div>
-                    <div class="page-title">Мои мосты</div>
-                    <div class="page-subtitle">Активные соединения между системами и мессенджером</div>
-                </div>
-                <button class="btn btn-primary" onclick="showScreen('create')">＋ Создать мост</button>
-            </div>
-
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">Активных мостов</div>
-                    <div class="stat-value green" id="stat-active">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Всего мостов</div>
-                    <div class="stat-value accent" id="stat-total">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Срабатываний</div>
-                    <div class="stat-value" id="stat-logs">—</div>
-                </div>
-            </div>
-
-            <div class="section-label">Соединения</div>
-            <div class="bridges-grid" id="bridges-list">
-                <div class="loading">Загрузка...</div>
-            </div>
+        <div class="sidebar">
+            <div class="logo">Bridge<span>Flow</span></div>
+            <div class="nav-item active" onclick="showScreen('dashboard')">⚡ Мои мосты</div>
+            <div class="nav-item" onclick="showScreen('create')">＋ Создать мост</div>
+            <div class="nav-item" onclick="showScreen('logs')">📋 Логи</div>
+            <div class="nav-item" onclick="showScreen('profile')" style="margin-top:auto;">👤 Профиль</div>
         </div>
 
-        <!-- CREATE -->
-        <div id="screen-create" class="screen">
-            <div class="create-header">
-                <div class="back-btn" onclick="showScreen('dashboard')">←</div>
-                <div>
-                    <div class="page-title">Новый мост</div>
-                    <div class="page-subtitle">Настрой соединение за 4 шага</div>
+        <div class="main">
+
+            <!-- DASHBOARD -->
+            <div id="screen-dashboard" class="screen active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Мои мосты</div>
+                        <div class="page-subtitle">Активные соединения между системами и мессенджером</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showScreen('create')">＋ Создать мост</button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Активных мостов</div>
+                        <div class="stat-value green" id="stat-active">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Всего мостов</div>
+                        <div class="stat-value accent" id="stat-total">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Срабатываний</div>
+                        <div class="stat-value" id="stat-logs">—</div>
+                    </div>
+                </div>
+
+                <div class="section-label">Соединения</div>
+                <div class="bridges-grid" id="bridges-list">
+                    <div class="loading">Загрузка...</div>
                 </div>
             </div>
 
-            <div class="steps-bar">
-                <div class="step-item active" id="si-1">
-                    <div class="step-num">1</div> Источник
+            <!-- CREATE -->
+            <div id="screen-create" class="screen">
+                <div class="create-header">
+                    <div class="back-btn" onclick="showScreen('dashboard')">←</div>
+                    <div>
+                        <div class="page-title">Новый мост</div>
+                        <div class="page-subtitle">Настрой соединение за 4 шага</div>
+                    </div>
                 </div>
-                <div class="step-line" id="sl-1"></div>
-                <div class="step-item" id="si-2">
-                    <div class="step-num">2</div> Событие
-                </div>
-                <div class="step-line" id="sl-2"></div>
-                <div class="step-item" id="si-3">
-                    <div class="step-num">3</div> Получатель
-                </div>
-                <div class="step-line" id="sl-3"></div>
-                <div class="step-item" id="si-4">
-                    <div class="step-num">4</div> Шаблон
-                </div>
-            </div>
 
-            <!-- Step 1 -->
-            <div class="step-content" id="step-1"
-                style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;">
-                <div>
-                    <div class="step-title">Подключение к Bitrix24</div>
-                    <div class="step-desc">Введи данные для подключения к порталу</div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            Домен портала
-                            <span class="hint-toggle" onclick="toggleHint('hint-domain')">? как найти</span>
-                        </label>
-                        <input class="form-input" id="b24-domain" placeholder="mycompany.bitrix24.ru">
-                        <div class="hint-box" id="hint-domain">
-                            💡 Это адрес твоего Bitrix24 в браузере. Например если заходишь на
-                            <strong>mycompany.bitrix24.ru</strong> — это и есть домен. Без https:// и без слеша.
+                <div class="steps-bar">
+                    <div class="step-item active" id="si-1">
+                        <div class="step-num">1</div> Источник
+                    </div>
+                    <div class="step-line" id="sl-1"></div>
+                    <div class="step-item" id="si-2">
+                        <div class="step-num">2</div> Событие
+                    </div>
+                    <div class="step-line" id="sl-2"></div>
+                    <div class="step-item" id="si-3">
+                        <div class="step-num">3</div> Получатель
+                    </div>
+                    <div class="step-line" id="sl-3"></div>
+                    <div class="step-item" id="si-4">
+                        <div class="step-num">4</div> Шаблон
+                    </div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="step-content" id="step-1"
+                    style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;">
+                    <div>
+                        <div class="step-title">Подключение к Bitrix24</div>
+                        <div class="step-desc">Введи данные для подключения к порталу</div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Домен портала
+                                <span class="hint-toggle" onclick="toggleHint('hint-domain')">? как найти</span>
+                            </label>
+                            <input class="form-input" id="b24-domain" placeholder="mycompany.bitrix24.ru">
+                            <div class="hint-box" id="hint-domain">
+                                💡 Это адрес твоего Bitrix24 в браузере. Например если заходишь на
+                                <strong>mycompany.bitrix24.ru</strong> — это и есть домен. Без https:// и без слеша.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Токен входящего вебхука
+                                <span class="hint-toggle" onclick="toggleHint('hint-token')">? как найти</span>
+                            </label>
+                            <input class="form-input" id="b24-token" type="password" placeholder="swqjwlkrpbysc7kl">
+                            <div class="hint-box" id="hint-token">
+                                💡 Зайди в Bitrix24 → <strong>Разработчикам → Входящие вебхуки</strong> → Добавить вебхук.
+                                Дай права на <strong>CRM</strong>. Скопируй токен из строки:<br>
+                                <code style="color:#4f7cff">https://портал/rest/1/<strong>ТОКЕН</strong>/</code>
+                            </div>
+                        </div>
+                        <div class="step-footer">
+                            <span></span>
+                            <button class="btn btn-primary" onclick="goStep(2)">Далее →</button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            Токен входящего вебхука
-                            <span class="hint-toggle" onclick="toggleHint('hint-token')">? как найти</span>
-                        </label>
-                        <input class="form-input" id="b24-token" type="password" placeholder="swqjwlkrpbysc7kl">
-                        <div class="hint-box" id="hint-token">
-                            💡 Зайди в Bitrix24 → <strong>Разработчикам → Входящие вебхуки</strong> → Добавить вебхук.
-                            Дай права на <strong>CRM</strong>. Скопируй токен из строки:<br>
-                            <code style="color:#4f7cff">https://портал/rest/1/<strong>ТОКЕН</strong>/</code>
+
+                    <div>
+                        <div class="section-label">Выбери источник</div>
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+                            <div class="source-card selected" onclick="selectCard(this,'source')"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">📊</div>
+                                <div>
+                                    <div class="source-name">Bitrix24</div>
+                                    <div class="source-badge">CRM · доступно</div>
+                                </div>
+                            </div>
+                            <div class="source-card disabled"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">📋</div>
+                                <div>
+                                    <div class="source-name">1С</div>
+                                    <div class="source-badge">скоро</div>
+                                </div>
+                            </div>
+                            <div class="source-card disabled"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">📄</div>
+                                <div>
+                                    <div class="source-name">Контур</div>
+                                    <div class="source-badge">скоро</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section-label">Уже подключённые</div>
+                        <div id="existing-sources" style="display:flex;flex-direction:column;gap:8px;">
+                            <div class="loading">Загрузка...</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-content" id="step-2"
+                    style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
+                    <div>
+                        <div class="step-title">Настройка события</div>
+                        <div class="step-desc">Выбранное событие будет запускать уведомление</div>
+
+                        <div
+                            style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;">
+                            <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Выбранное событие</div>
+                            <div id="selected-event-display" style="font-size:15px;font-weight:500;">Новая сделка —
+                                ONCRMDEALADD</div>
+                        </div>
+
+                        <div
+                            style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.15);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7;">
+                            💡 <strong style="color:var(--text)">Совет:</strong> Каждый тип события требует отдельного
+                            вебхука в Bitrix24. Если хочешь отслеживать несколько событий — создай несколько мостов.
+                        </div>
+
+                        <div class="step-footer">
+                            <button class="btn btn-ghost" onclick="goStep(1)">← Назад</button>
+                            <button class="btn btn-primary" onclick="goStep(3)">Далее →</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-label">Выбери событие</div>
+                        <div class="events-list">
+                            <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
+                                <div class="event-radio"></div>
+                                <div class="event-info">
+                                    <div class="event-name">Новая сделка</div>
+                                    <div class="event-desc">При создании сделки</div>
+                                </div>
+                                <div class="event-tag">ADD</div>
+                            </div>
+                            <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
+                                <div class="event-radio"></div>
+                                <div class="event-info">
+                                    <div class="event-name">Изменение сделки</div>
+                                    <div class="event-desc">При любом изменении</div>
+                                </div>
+                                <div class="event-tag">UPDATE</div>
+                            </div>
+                            <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
+                                <div class="event-radio"></div>
+                                <div class="event-info">
+                                    <div class="event-name">Новый лид</div>
+                                    <div class="event-desc">При создании лида</div>
+                                </div>
+                                <div class="event-tag">ADD</div>
+                            </div>
+                            <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
+                                <div class="event-radio"></div>
+                                <div class="event-info">
+                                    <div class="event-name">Изменение лида</div>
+                                    <div class="event-desc">При изменении лида</div>
+                                </div>
+                                <div class="event-tag">UPDATE</div>
+                            </div>
+                            <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
+                                <div class="event-radio"></div>
+                                <div class="event-info">
+                                    <div class="event-name">Новый контакт</div>
+                                    <div class="event-desc">При добавлении контакта</div>
+                                </div>
+                                <div class="event-tag">ADD</div>
+                            </div>
+                        </div>
+                        <div class="section-label" style="margin-top:16px;">Уже используются</div>
+                        <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
+                            <div class="loading">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-content" id="step-3"
+                    style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
+                    <div>
+                        <div class="step-title">Подключение к VK Teams</div>
+                        <div class="step-desc">Введи данные бота для отправки уведомлений</div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Токен бота
+                                <span class="hint-toggle" onclick="toggleHint('hint-vk-token')">? как найти</span>
+                            </label>
+                            <input class="form-input" id="vk-token" type="password" placeholder="001.xxx...">
+                            <div class="hint-box" id="hint-vk-token">
+                                💡 Зайди в VK Teams → <strong>Администрирование → Боты</strong> → Создай бота. Скопируй
+                                токен из настроек бота.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Chat ID получателя
+                                <span class="hint-toggle" onclick="toggleHint('hint-vk-chat')">? как найти</span>
+                            </label>
+                            <input class="form-input" id="vk-chat" placeholder="user@company.ru">
+                            <div class="hint-box" id="hint-vk-chat">
+                                💡 Для личного сообщения — email пользователя в VK Teams, например
+                                <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                                        data-cfemail="7a130c1b143a1915170a1b140354080f">[email&#160;protected]</a></strong>.
+                                Для группового чата — ID из URL чата.
+                            </div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-ghost" onclick="goStep(2)">← Назад</button>
+                            <button class="btn btn-primary" onclick="goStep(4)">Далее →</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-label">Выбери получателя</div>
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+                            <div class="source-card selected" onclick="selectCard(this,'target')"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">💬</div>
+                                <div>
+                                    <div class="source-name">VK Teams</div>
+                                    <div class="source-badge">MyTeam · доступно</div>
+                                </div>
+                            </div>
+                            <div class="source-card disabled"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">✈️</div>
+                                <div>
+                                    <div class="source-name">Telegram</div>
+                                    <div class="source-badge">скоро</div>
+                                </div>
+                            </div>
+                            <div class="source-card disabled"
+                                style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                                <div style="font-size:24px;">💼</div>
+                                <div>
+                                    <div class="source-name">Slack</div>
+                                    <div class="source-badge">скоро</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section-label">Уже подключённые</div>
+                        <div id="existing-targets" style="display:flex;flex-direction:column;gap:8px;">
+                            <div class="loading">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-content" id="step-4" style="display:none">
+                    <div class="step-title">Настрой шаблон</div>
+                    <div class="step-desc">Составь текст уведомления</div>
+                    <div class="section-label">Доступные переменные</div>
+                    <div class="vars-list">
+                        <div class="var-chip" onclick="insertVar('{TITLE}')">&#123;TITLE&#125;</div>
+                        <div class="var-chip" onclick="insertVar('{AMOUNT}')">&#123;AMOUNT&#125;</div>
+                        <div class="var-chip" onclick="insertVar('{CURRENCY}')">&#123;CURRENCY&#125;</div>
+                        <div class="var-chip" onclick="insertVar('{CONTACT}')">&#123;CONTACT&#125;</div>
+                        <div class="var-chip" onclick="insertVar('{COMPANY}')">&#123;COMPANY&#125;</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Название моста</label>
+                        <input class="form-input" id="bridge-name" placeholder="Например: Новые сделки → Команда продаж">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Текст сообщения</label>
+                        <textarea class="template-area" id="template-area" oninput="updatePreview()">🔔 Новая сделка!
+    Название: {TITLE}
+    Сумма: {AMOUNT} {CURRENCY}
+    Контакт: {CONTACT}
+    Компания: {COMPANY}</textarea>
+                    </div>
+                    <div class="preview-label">Предпросмотр</div>
+                    <div class="preview-box" id="preview-box"></div>
                     <div class="step-footer">
-                        <span></span>
-                        <button class="btn btn-primary" onclick="goStep(2)">Далее →</button>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-label">Выбери источник</div>
-                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-                        <div class="source-card selected" onclick="selectCard(this,'source')"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">📊</div>
-                            <div>
-                                <div class="source-name">Bitrix24</div>
-                                <div class="source-badge">CRM · доступно</div>
-                            </div>
-                        </div>
-                        <div class="source-card disabled"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">📋</div>
-                            <div>
-                                <div class="source-name">1С</div>
-                                <div class="source-badge">скоро</div>
-                            </div>
-                        </div>
-                        <div class="source-card disabled"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">📄</div>
-                            <div>
-                                <div class="source-name">Контур</div>
-                                <div class="source-badge">скоро</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="section-label">Уже подключённые</div>
-                    <div id="existing-sources" style="display:flex;flex-direction:column;gap:8px;">
-                        <div class="loading">Загрузка...</div>
+                        <button class="btn btn-ghost" onclick="goStep(3)">← Назад</button>
+                        <button class="btn btn-primary" onclick="createBridge()">⚡ Включить мост</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 2 -->
-            <div class="step-content" id="step-2"
-                style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
-                <div>
-                    <div class="step-title">Настройка события</div>
-                    <div class="step-desc">Выбранное событие будет запускать уведомление</div>
+            <!-- LOGS -->
+            <div id="screen-logs" class="screen">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Логи</div>
+                        <div class="page-subtitle">История срабатываний всех мостов</div>
+                    </div>
+                    <button class="btn btn-ghost" onclick="loadLogs()">↻ Обновить</button>
+                </div>
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Время</th>
+                            <th>Мост</th>
+                            <th>Статус</th>
+                            <th>Deal ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body">
+                        <tr>
+                            <td colspan="4" class="loading">Загрузка...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <div
-                        style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;">
-                        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Выбранное событие</div>
-                        <div id="selected-event-display" style="font-size:15px;font-weight:500;">Новая сделка —
-                            ONCRMDEALADD</div>
+            <!-- SUCCESS -->
+            <div id="screen-success" class="screen">
+                <div class="success-screen">
+                    <div class="success-icon">⚡</div>
+                    <div class="success-title">Мост создан!</div>
+                    <div class="success-desc">
+                        Осталось один раз настроить вебхук в Bitrix24 — это займёт 30 секунд.
                     </div>
 
                     <div
-                        style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.15);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7;">
-                        💡 <strong style="color:var(--text)">Совет:</strong> Каждый тип события требует отдельного
-                        вебхука в Bitrix24. Если хочешь отслеживать несколько событий — создай несколько мостов.
+                        style="background:#1e2230;border:1px solid #2a2f3f;border-radius:14px;padding:24px;text-align:left;margin-bottom:24px;">
+                        <div
+                            style="font-size:11px;color:#6b718a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">
+                            Инструкция</div>
+
+                        <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                            1. Зайди в Bitrix24 → <strong>Разработчикам → Исходящие вебхуки</strong>
+                        </div>
+                        <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
+                            2. Нажми <strong>Добавить вебхук</strong>
+                        </div>
+                        <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                            3. Вставь этот URL в поле <strong>"URL вашего обработчика"</strong>:
+                        </div>
+
+                        <div
+                            style="background:#0d0f14;border:1px solid #4f7cff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                            <code id="webhook-url" style="color:#4f7cff;font-size:13px;word-break:break-all;"></code>
+                            <button onclick="copyUrl()"
+                                style="background:#4f7cff;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;flex-shrink:0;">Копировать</button>
+                        </div>
+
+                        <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
+                            4. В поле <strong>"События"</strong> выбери:
+                        </div>
+                        <div
+                            style="background:#0d0f14;border:1px solid #2a2f3f;border-radius:8px;padding:10px 16px;margin-bottom:0;">
+                            <code id="webhook-event" style="color:#2dd4a0;font-size:13px;"></code>
+                        </div>
                     </div>
 
-                    <div class="step-footer">
-                        <button class="btn btn-ghost" onclick="goStep(1)">← Назад</button>
-                        <button class="btn btn-primary" onclick="goStep(3)">Далее →</button>
+                    <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
+                </div>
+            </div>
+            <!-- PROFILE -->
+            <div id="screen-profile" class="screen">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Личный кабинет</div>
+                        <div class="page-subtitle" id="profile-email">—</div>
                     </div>
                 </div>
 
-                <div>
-                    <div class="section-label">Выбери событие</div>
-                    <div class="events-list">
-                        <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
-                            <div class="event-radio"></div>
-                            <div class="event-info">
-                                <div class="event-name">Новая сделка</div>
-                                <div class="event-desc">При создании сделки</div>
-                            </div>
-                            <div class="event-tag">ADD</div>
-                        </div>
-                        <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
-                            <div class="event-radio"></div>
-                            <div class="event-info">
-                                <div class="event-name">Изменение сделки</div>
-                                <div class="event-desc">При любом изменении</div>
-                            </div>
-                            <div class="event-tag">UPDATE</div>
-                        </div>
-                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
-                            <div class="event-radio"></div>
-                            <div class="event-info">
-                                <div class="event-name">Новый лид</div>
-                                <div class="event-desc">При создании лида</div>
-                            </div>
-                            <div class="event-tag">ADD</div>
-                        </div>
-                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
-                            <div class="event-radio"></div>
-                            <div class="event-info">
-                                <div class="event-name">Изменение лида</div>
-                                <div class="event-desc">При изменении лида</div>
-                            </div>
-                            <div class="event-tag">UPDATE</div>
-                        </div>
-                        <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
-                            <div class="event-radio"></div>
-                            <div class="event-info">
-                                <div class="event-name">Новый контакт</div>
-                                <div class="event-desc">При добавлении контакта</div>
-                            </div>
-                            <div class="event-tag">ADD</div>
-                        </div>
+                <div style="max-width:480px;display:flex;flex-direction:column;gap:12px;">
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+                        <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Email</div>
+                        <div style="font-size:16px;font-weight:500;" id="profile-email-val">—</div>
                     </div>
-                    <div class="section-label" style="margin-top:16px;">Уже используются</div>
-                    <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
-                        <div class="loading">Загрузка...</div>
-                    </div>
+
+                    <button class="btn btn-ghost" style="justify-content:center;" onclick="logout()">
+                        🚪 Выйти из аккаунта
+                    </button>
+
+                    <button class="btn btn-danger" style="justify-content:center;" onclick="deleteAccount()">
+                        🗑 Удалить аккаунт
+                    </button>
                 </div>
             </div>
 
-            <!-- Step 3 -->
-            <div class="step-content" id="step-3"
-                style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
-                <div>
-                    <div class="step-title">Подключение к VK Teams</div>
-                    <div class="step-desc">Введи данные бота для отправки уведомлений</div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            Токен бота
-                            <span class="hint-toggle" onclick="toggleHint('hint-vk-token')">? как найти</span>
-                        </label>
-                        <input class="form-input" id="vk-token" type="password" placeholder="001.xxx...">
-                        <div class="hint-box" id="hint-vk-token">
-                            💡 Зайди в VK Teams → <strong>Администрирование → Боты</strong> → Создай бота. Скопируй
-                            токен из настроек бота.
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            Chat ID получателя
-                            <span class="hint-toggle" onclick="toggleHint('hint-vk-chat')">? как найти</span>
-                        </label>
-                        <input class="form-input" id="vk-chat" placeholder="user@company.ru">
-                        <div class="hint-box" id="hint-vk-chat">
-                            💡 Для личного сообщения — email пользователя в VK Teams, например
-                            <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                    data-cfemail="7a130c1b143a1915170a1b140354080f">[email&#160;protected]</a></strong>.
-                            Для группового чата — ID из URL чата.
-                        </div>
-                    </div>
-                    <div class="step-footer">
-                        <button class="btn btn-ghost" onclick="goStep(2)">← Назад</button>
-                        <button class="btn btn-primary" onclick="goStep(4)">Далее →</button>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-label">Выбери получателя</div>
-                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-                        <div class="source-card selected" onclick="selectCard(this,'target')"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">💬</div>
-                            <div>
-                                <div class="source-name">VK Teams</div>
-                                <div class="source-badge">MyTeam · доступно</div>
-                            </div>
-                        </div>
-                        <div class="source-card disabled"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">✈️</div>
-                            <div>
-                                <div class="source-name">Telegram</div>
-                                <div class="source-badge">скоро</div>
-                            </div>
-                        </div>
-                        <div class="source-card disabled"
-                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                            <div style="font-size:24px;">💼</div>
-                            <div>
-                                <div class="source-name">Slack</div>
-                                <div class="source-badge">скоро</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="section-label">Уже подключённые</div>
-                    <div id="existing-targets" style="display:flex;flex-direction:column;gap:8px;">
-                        <div class="loading">Загрузка...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 4 -->
-            <div class="step-content" id="step-4" style="display:none">
-                <div class="step-title">Настрой шаблон</div>
-                <div class="step-desc">Составь текст уведомления</div>
-                <div class="section-label">Доступные переменные</div>
-                <div class="vars-list">
-                    <div class="var-chip" onclick="insertVar('{TITLE}')">&#123;TITLE&#125;</div>
-                    <div class="var-chip" onclick="insertVar('{AMOUNT}')">&#123;AMOUNT&#125;</div>
-                    <div class="var-chip" onclick="insertVar('{CURRENCY}')">&#123;CURRENCY&#125;</div>
-                    <div class="var-chip" onclick="insertVar('{CONTACT}')">&#123;CONTACT&#125;</div>
-                    <div class="var-chip" onclick="insertVar('{COMPANY}')">&#123;COMPANY&#125;</div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Название моста</label>
-                    <input class="form-input" id="bridge-name" placeholder="Например: Новые сделки → Команда продаж">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Текст сообщения</label>
-                    <textarea class="template-area" id="template-area" oninput="updatePreview()">🔔 Новая сделка!
-Название: {TITLE}
-Сумма: {AMOUNT} {CURRENCY}
-Контакт: {CONTACT}
-Компания: {COMPANY}</textarea>
-                </div>
-                <div class="preview-label">Предпросмотр</div>
-                <div class="preview-box" id="preview-box"></div>
-                <div class="step-footer">
-                    <button class="btn btn-ghost" onclick="goStep(3)">← Назад</button>
-                    <button class="btn btn-primary" onclick="createBridge()">⚡ Включить мост</button>
-                </div>
-            </div>
         </div>
 
-        <!-- LOGS -->
-        <div id="screen-logs" class="screen">
-            <div class="page-header">
-                <div>
-                    <div class="page-title">Логи</div>
-                    <div class="page-subtitle">История срабатываний всех мостов</div>
-                </div>
-                <button class="btn btn-ghost" onclick="loadLogs()">↻ Обновить</button>
-            </div>
-            <table class="logs-table">
-                <thead>
-                    <tr>
-                        <th>Время</th>
-                        <th>Мост</th>
-                        <th>Статус</th>
-                        <th>Deal ID</th>
-                    </tr>
-                </thead>
-                <tbody id="logs-body">
-                    <tr>
-                        <td colspan="4" class="loading">Загрузка...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- SUCCESS -->
-        <div id="screen-success" class="screen">
-            <div class="success-screen">
-                <div class="success-icon">⚡</div>
-                <div class="success-title">Мост создан!</div>
-                <div class="success-desc">
-                    Осталось один раз настроить вебхук в Bitrix24 — это займёт 30 секунд.
-                </div>
-
-                <div
-                    style="background:#1e2230;border:1px solid #2a2f3f;border-radius:14px;padding:24px;text-align:left;margin-bottom:24px;">
-                    <div
-                        style="font-size:11px;color:#6b718a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">
-                        Инструкция</div>
-
-                    <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
-                        1. Зайди в Bitrix24 → <strong>Разработчикам → Исходящие вебхуки</strong>
-                    </div>
-                    <div style="margin-bottom:16px;font-size:14px;color:#e8eaf2;">
-                        2. Нажми <strong>Добавить вебхук</strong>
-                    </div>
-                    <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
-                        3. Вставь этот URL в поле <strong>"URL вашего обработчика"</strong>:
-                    </div>
-
-                    <div
-                        style="background:#0d0f14;border:1px solid #4f7cff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                        <code id="webhook-url" style="color:#4f7cff;font-size:13px;word-break:break-all;"></code>
-                        <button onclick="copyUrl()"
-                            style="background:#4f7cff;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;flex-shrink:0;">Копировать</button>
-                    </div>
-
-                    <div style="margin-bottom:8px;font-size:14px;color:#e8eaf2;">
-                        4. В поле <strong>"События"</strong> выбери:
-                    </div>
-                    <div
-                        style="background:#0d0f14;border:1px solid #2a2f3f;border-radius:8px;padding:10px 16px;margin-bottom:0;">
-                        <code id="webhook-event" style="color:#2dd4a0;font-size:13px;"></code>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" onclick="showScreen('dashboard')">← К списку мостов</button>
-            </div>
-        </div>
-        <!-- PROFILE -->
-        <div id="screen-profile" class="screen">
-            <div class="page-header">
-                <div>
-                    <div class="page-title">Личный кабинет</div>
-                    <div class="page-subtitle" id="profile-email">—</div>
-                </div>
-            </div>
-
-            <div style="max-width:480px;display:flex;flex-direction:column;gap:12px;">
-                <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-                    <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Email</div>
-                    <div style="font-size:16px;font-weight:500;" id="profile-email-val">—</div>
-                </div>
-
-                <button class="btn btn-ghost" style="justify-content:center;" onclick="logout()">
-                    🚪 Выйти из аккаунта
-                </button>
-
-                <button class="btn btn-danger" style="justify-content:center;" onclick="deleteAccount()">
-                    🗑 Удалить аккаунт
-                </button>
-            </div>
-        </div>
-
-    </div>
-
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script>
-        const API = 'https://bridgeflow.onrender.com';
-        let selectedEvent = 'ONCRMDEALADD';
-
-        // NAVIGATION
-        function showScreen(name) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + name).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const idx = { dashboard: 0, create: 1, logs: 2 };
-            if (idx[name] !== undefined) document.querySelectorAll('.nav-item')[idx[name]].classList.add('active');
-            if (name === 'dashboard') loadDashboard();
-            if (name === 'logs') loadLogs();
-            if (name === 'create') { goStep(1); updatePreview(); }
-            if (name === 'profile') showProfile();
-
-            // Сохраняем текущий экран
-            localStorage.setItem('currentScreen', name);
-        }
-
-        // DASHBOARD
-        async function loadDashboard() {
-            const userData = JSON.parse(localStorage.getItem('user') || '{}');
-            const userId = userData.user_id || 0;
-
-            const [bridges, logs] = await Promise.all([
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+        <script>
+            const API = 'https://bridgeflow.onrender.com';
+            let selectedEvent = 'ONCRMDEALADD';
+          
+            // NAVIGATION
+            function showScreen(name) {
+              document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+              const screen = document.getElementById('screen-' + name);
+              if (screen) screen.classList.add('active');
+          
+              document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+              const idx = { dashboard: 0, create: 1, logs: 2, profile: 3 };
+              if (idx[name] !== undefined) {
+                const items = document.querySelectorAll('.nav-item');
+                if (items[idx[name]]) items[idx[name]].classList.add('active');
+              }
+          
+              if (name === 'dashboard') loadDashboard();
+              if (name === 'logs') loadLogs();
+              if (name === 'create') { goStep(1); updatePreview(); }
+              if (name === 'profile') showProfile();
+          
+              localStorage.setItem('currentScreen', name);
+            }
+          
+            // DASHBOARD
+            async function loadDashboard() {
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              const userId = userData.user_id || 0;
+          
+              const [bridges, logs] = await Promise.all([
                 fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json()),
                 fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json())
-            ]);
-
-            const active = bridges.filter(b => b.is_active).length;
-            document.getElementById('stat-active').textContent = active;
-            document.getElementById('stat-total').textContent = bridges.length;
-            document.getElementById('stat-logs').textContent = logs.length;
-
-            const list = document.getElementById('bridges-list');
-
-            if (bridges.length === 0) {
-                list.innerHTML = `<div class="empty-state"><div class="icon">🔌</div><h3>Нет активных мостов</h3><p>Создай первый мост чтобы начать получать уведомления</p></div>`;
+              ]);
+          
+              const active = bridges.filter(b => b.is_active).length;
+              const elActive = document.getElementById('stat-active');
+              const elTotal  = document.getElementById('stat-total');
+              const elLogs   = document.getElementById('stat-logs');
+              if (elActive) elActive.textContent = active;
+              if (elTotal)  elTotal.textContent  = bridges.length;
+              if (elLogs)   elLogs.textContent   = logs.length;
+          
+              const list = document.getElementById('bridges-list');
+              if (!list) return;
+          
+              if (!bridges || bridges.length === 0) {
+                list.innerHTML = `
+                  <div class="empty-state">
+                    <div class="icon">🔌</div>
+                    <h3>Нет активных мостов</h3>
+                    <p>Создай первый мост чтобы начать получать уведомления</p>
+                  </div>`;
                 return;
-            }
-
-            list.innerHTML = bridges.map(b => {
+              }
+          
+              list.innerHTML = bridges.map(b => {
                 const bridgeLogs = logs.filter(l => l.bridge_id === b.id);
                 const lastLog = bridgeLogs[0];
-
+          
                 let statusColor, statusGlow, statusTitle;
                 if (!lastLog) {
+                  statusColor = '#ff4f6d';
+                  statusGlow = 'rgba(255,79,109,0.4)';
+                  statusTitle = 'Ни одного события';
+                } else {
+                  const lastDate = new Date(lastLog.triggered_at + 'Z');
+                  const diffDays = (new Date() - lastDate) / (1000 * 60 * 60 * 24);
+                  if (diffDays < 1) {
+                    statusColor = '#2dd4a0';
+                    statusGlow = 'rgba(45,212,160,0.4)';
+                    statusTitle = 'Активен сегодня';
+                  } else if (diffDays < 7) {
+                    statusColor = '#f59e0b';
+                    statusGlow = 'rgba(245,158,11,0.4)';
+                    statusTitle = 'Нет событий больше суток';
+                  } else {
                     statusColor = '#ff4f6d';
                     statusGlow = 'rgba(255,79,109,0.4)';
-                    statusTitle = 'Ни одного события';
-                } else {
-                    const lastDate = new Date(lastLog.triggered_at + 'Z');
-                    const diffDays = (new Date() - lastDate) / (1000 * 60 * 60 * 24);
-                    if (diffDays < 1) {
-                        statusColor = '#2dd4a0';
-                        statusGlow = 'rgba(45,212,160,0.4)';
-                        statusTitle = 'Активен сегодня';
-                    } else if (diffDays < 7) {
-                        statusColor = '#f59e0b';
-                        statusGlow = 'rgba(245,158,11,0.4)';
-                        statusTitle = 'Нет событий больше суток';
-                    } else {
-                        statusColor = '#ff4f6d';
-                        statusGlow = 'rgba(255,79,109,0.4)';
-                        statusTitle = 'Нет событий больше недели';
-                    }
+                    statusTitle = 'Нет событий больше недели';
+                  }
                 }
-
+          
                 return `
-                <div class="bridge-card">
-                  <div title="${statusTitle}" style="
-                    width:10px;height:10px;border-radius:50%;flex-shrink:0;
-                    background:${statusColor};
-                    box-shadow:0 0 6px ${statusGlow};
-                    animation:${b.is_active ? 'blink 3s ease-in-out infinite' : 'none'};
-                  "></div>
-                  <div class="bridge-flow">
-                    <div class="bridge-node">
-                      <div class="source-label">Источник</div>
-                      ${b.source_type} · ${b.event_type}
+                  <div class="bridge-card">
+                    <div title="${statusTitle}" style="
+                      width:10px;height:10px;border-radius:50%;flex-shrink:0;
+                      background:${statusColor};
+                      box-shadow:0 0 6px ${statusGlow};
+                      animation:${b.is_active ? 'blink 3s ease-in-out infinite' : 'none'};
+                    "></div>
+          
+                    <div class="bridge-flow">
+                      <div class="bridge-node">
+                        <div class="source-label">Источник</div>
+                        ${b.source_type} · ${b.event_type}
+                      </div>
+                      <div class="bridge-arrow"></div>
+                      <div class="bridge-node">
+                        <div class="source-label">Получатель</div>
+                        ${b.target_type} · ${(b.target_config && b.target_config.chat_id) ? b.target_config.chat_id : ''}
+                      </div>
                     </div>
-                    <div class="bridge-arrow"></div>
-                    <div class="bridge-node">
-                      <div class="source-label">Получатель</div>
-                      ${b.target_type} · ${b.target_config?.chat_id || ''}
+          
+                    <div class="bridge-meta">
+                      <strong>${b.name}</strong>
+                      ${new Date(b.created_at).toLocaleDateString('ru')}
+                    </div>
+          
+                    <div class="bridge-actions">
+                      <button class="toggle ${b.is_active ? '' : 'off'}" onclick="toggleBridge(${b.id}, ${b.is_active})"></button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteBridge(${b.id})">✕</button>
                     </div>
                   </div>
-                  <div class="bridge-meta">
-                    <strong>${b.name}</strong>
-                    ${new Date(b.created_at).toLocaleDateString('ru')}
-                  </div>
-                  <div class="bridge-actions">
-                    <button class="toggle ${b.is_active ? '' : 'off'}" onclick="toggleBridge(${b.id}, ${b.is_active})"></button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteBridge(${b.id})">✕</button>
-                  </div>
-                </div>`;
-            }).join('');
-
+                `;
+              }).join('');
+            }
+          
             async function toggleBridge(id, isActive) {
-                await fetch(`${API}/api/bridges/${id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ is_active: !isActive })
-                });
-                loadDashboard();
+              await fetch(`${API}/api/bridges/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_active: !isActive })
+              });
+              loadDashboard();
             }
-
+          
             async function deleteBridge(id) {
-                if (!confirm('Удалить мост?')) return;
-                await fetch(`${API}/api/bridges/${id}`, { method: 'DELETE' });
-                loadDashboard();
+              if (!confirm('Удалить мост?')) return;
+              await fetch(`${API}/api/bridges/${id}`, { method: 'DELETE' });
+              loadDashboard();
             }
-
+          
             // LOGS
             async function loadLogs() {
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                const userId = userData.user_id || 0;
-                const logs = await fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json());
-                if (logs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="loading">Логов пока нет</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = logs.map(l => `
-    <tr>
-      <td>${new Date(l.triggered_at + 'Z').toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</td>
-      <td>Мост #${l.bridge_id}</td>
-      <td><span class="badge ${l.status}">${l.status}</span></td>
-      <td>${l.payload?.['data[FIELDS][ID]'] || '—'}</td>
-    </tr>
-  `).join('');
+              const tbody = document.getElementById('logs-body');
+              if (!tbody) return;
+          
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              const userId = userData.user_id || 0;
+          
+              const logs = await fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json());
+          
+              if (!logs || logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="loading">Логов пока нет</td></tr>';
+                return;
+              }
+          
+              tbody.innerHTML = logs.map(l => `
+                <tr>
+                  <td>${new Date(l.triggered_at + 'Z').toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</td>
+                  <td>Мост #${l.bridge_id}</td>
+                  <td><span class="badge ${l.status}">${l.status}</span></td>
+                  <td>${(l.payload && l.payload['data[FIELDS][ID]']) ? l.payload['data[FIELDS][ID]'] : '—'}</td>
+                </tr>
+              `).join('');
             }
-
+          
             // STEPS
             function goStep(n) {
-                [1, 2, 3, 4].forEach(i => {
-                    document.getElementById('step-' + i).style.display = i === n ? 'grid' : 'none';
-                    // шаг 4 без грида
-                    if (i === 4) document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none';
-                    const ind = document.getElementById('si-' + i);
-                    ind.classList.remove('active', 'done');
-                    if (i < n) ind.classList.add('done');
-                    if (i === n) ind.classList.add('active');
-                    if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
-                });
-                localStorage.setItem('currentStep', n);
-                if (n <= 3) loadExistingConnections();
+              [1, 2, 3, 4].forEach(i => {
+                const step = document.getElementById('step-' + i);
+                if (!step) return;
+          
+                if (i === 4) {
+                  step.style.display = (i === n) ? 'block' : 'none';
+                } else {
+                  step.style.display = (i === n) ? 'grid' : 'none';
+                }
+          
+                const ind = document.getElementById('si-' + i);
+                if (ind) {
+                  ind.classList.remove('active', 'done');
+                  if (i < n) ind.classList.add('done');
+                  if (i === n) ind.classList.add('active');
+                }
+          
+                if (i < 4) {
+                  const line = document.getElementById('sl-' + i);
+                  if (line) line.classList.toggle('done', i < n);
+                }
+              });
+          
+              localStorage.setItem('currentStep', n);
+              if (n <= 3) loadExistingConnections();
             }
-
+          
             function selectCard(el, type) {
-                el.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.remove('selected'));
-                el.classList.add('selected');
+              // type пока не используется, но оставляем
+              if (!el || !el.parentElement) return;
+              el.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.remove('selected'));
+              el.classList.add('selected');
             }
-
+          
             function selectEvent(el, eventType) {
-                document.querySelectorAll('.event-item').forEach(e => e.classList.remove('selected'));
-                el.classList.add('selected');
-                selectedEvent = eventType;
-                const names = {
-                    'ONCRMDEALADD': 'Новая сделка',
-                    'ONCRMDEALUPDATE': 'Изменение сделки',
-                    'ONCRMLEADADD': 'Новый лид',
-                    'ONCRMLEADUPDATE': 'Изменение лида',
-                    'ONCRMCONTACTADD': 'Новый контакт'
-                };
-                const el2 = document.getElementById('selected-event-display');
-                if (el2) el2.textContent = `${names[eventType] || eventType} — ${eventType}`;
+              document.querySelectorAll('.event-item').forEach(e => e.classList.remove('selected'));
+              if (el) el.classList.add('selected');
+          
+              selectedEvent = eventType;
+          
+              const names = {
+                'ONCRMDEALADD': 'Новая сделка',
+                'ONCRMDEALUPDATE': 'Изменение сделки',
+                'ONCRMLEADADD': 'Новый лид',
+                'ONCRMLEADUPDATE': 'Изменение лида',
+                'ONCRMCONTACTADD': 'Новый контакт'
+              };
+          
+              const el2 = document.getElementById('selected-event-display');
+              if (el2) el2.textContent = `${names[eventType] || eventType} — ${eventType}`;
             }
-
+          
             function insertVar(v) {
-                const ta = document.getElementById('template-area');
-                const pos = ta.selectionStart;
-                ta.value = ta.value.slice(0, pos) + v + ta.value.slice(pos);
-                updatePreview();
+              const ta = document.getElementById('template-area');
+              if (!ta) return;
+              const pos = ta.selectionStart ?? ta.value.length;
+              ta.value = ta.value.slice(0, pos) + v + ta.value.slice(pos);
+              updatePreview();
             }
-
+          
             function updatePreview() {
-                const tmpl = document.getElementById('template-area').value;
-                document.getElementById('preview-box').textContent = tmpl
-                    .replace(/{TITLE}/g, 'Тестовая сделка')
-                    .replace(/{AMOUNT}/g, '150 000')
-                    .replace(/{CURRENCY}/g, 'RUB')
-                    .replace(/{CONTACT}/g, 'Иван Иванов')
-                    .replace(/{COMPANY}/g, 'ООО Ромашка');
+              const ta = document.getElementById('template-area');
+              const box = document.getElementById('preview-box');
+              if (!ta || !box) return;
+          
+              const tmpl = ta.value || '';
+              box.textContent = tmpl
+                .replace(/{TITLE}/g, 'Тестовая сделка')
+                .replace(/{AMOUNT}/g, '150 000')
+                .replace(/{CURRENCY}/g, 'RUB')
+                .replace(/{CONTACT}/g, 'Иван Иванов')
+                .replace(/{COMPANY}/g, 'ООО Ромашка');
             }
-
+          
             // CREATE BRIDGE
             async function createBridge() {
-                const body = {
-                    name: document.getElementById('bridge-name').value || 'Новый мост',
-                    source_type: 'bitrix24',
-                    source_config: {
-                        domain: document.getElementById('b24-domain').value,
-                        token: document.getElementById('b24-token').value
-                    },
-                    event_type: selectedEvent,
-                    target_type: 'myteam',
-                    target_config: {
-                        token: document.getElementById('vk-token').value,
-                        chat_id: document.getElementById('vk-chat').value
-                    },
-                    template: document.getElementById('template-area').value
-                };
-
-                // ✅ Берём user_id из localStorage
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                const userId = userData.user_id || 0;
-
-                // ✅ Добавляем user_id в query params
-                const resp = await fetch(`${API}/api/bridges/?user_id=${userId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-
-                if (resp.ok) {
-                    const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
-                    document.getElementById('webhook-url').textContent = webhookUrl;
-                    document.getElementById('webhook-event').textContent = body.event_type;
-                    showScreen('success');
-                } else {
-                    alert('Ошибка при создании моста');
-                }
+              const body = {
+                name: document.getElementById('bridge-name')?.value || 'Новый мост',
+                source_type: 'bitrix24',
+                source_config: {
+                  domain: document.getElementById('b24-domain')?.value || '',
+                  token: document.getElementById('b24-token')?.value || ''
+                },
+                event_type: selectedEvent,
+                target_type: 'myteam',
+                target_config: {
+                  token: document.getElementById('vk-token')?.value || '',
+                  chat_id: document.getElementById('vk-chat')?.value || ''
+                },
+                template: document.getElementById('template-area')?.value || ''
+              };
+          
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              const userId = userData.user_id || 0;
+          
+              const resp = await fetch(`${API}/api/bridges/?user_id=${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              });
+          
+              if (resp.ok) {
+                const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
+                const wu = document.getElementById('webhook-url');
+                const we = document.getElementById('webhook-event');
+                if (wu) wu.textContent = webhookUrl;
+                if (we) we.textContent = body.event_type;
+                showScreen('success');
+              } else {
+                alert('Ошибка при создании моста');
+              }
             }
-
-            // INIT
-            window.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-            if (!window.currentUser.user_id) {
-
-                window.location.href = '/login';
-            } else {
-                updatePreview();
-                // Восстанавливаем состояние
-                const savedScreen = localStorage.getItem('currentScreen') || 'dashboard';
-                const savedStep = parseInt(localStorage.getItem('currentStep') || '1');
-
-                showScreen(savedScreen);
-                if (savedScreen === 'create') {
-                    goStep(savedStep);
-                }
+          
+            function copyUrl(e) {
+              const url = document.getElementById('webhook-url')?.textContent || '';
+              if (!url) return;
+          
+              navigator.clipboard.writeText(url);
+          
+              // чтобы не зависеть от глобального event
+              const btn = e?.target || window.event?.target;
+              if (btn) {
+                const old = btn.textContent;
+                btn.textContent = '✓ Скопировано';
+                setTimeout(() => btn.textContent = old || 'Копировать', 2000);
+              }
             }
-
-            function copyUrl() {
-                const url = document.getElementById('webhook-url').textContent;
-                navigator.clipboard.writeText(url);
-                event.target.textContent = '✓ Скопировано';
-                setTimeout(() => event.target.textContent = 'Копировать', 2000);
-            }
-
-            function loadProfile() {
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                document.getElementById('profile-email').textContent = userData.email || '—';
-                document.getElementById('profile-email-val').textContent = userData.email || '—';
-            }
-
+          
             function logout() {
-                localStorage.removeItem('user');
-                window.location.href = '/login';
+              localStorage.removeItem('user');
+              window.location.href = '/login';
             }
-
+          
             async function deleteAccount() {
-                if (!confirm('Удалить аккаунт? Все мосты тоже удалятся.')) return;
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                await fetch(`${API}/api/auth/delete/${userData.user_id}`, { method: 'DELETE' });
-                localStorage.removeItem('user');
-                window.location.href = '/login';
+              if (!confirm('Удалить аккаунт? Все мосты тоже удалятся.')) return;
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              await fetch(`${API}/api/auth/delete/${userData.user_id}`, { method: 'DELETE' });
+              localStorage.removeItem('user');
+              window.location.href = '/login';
             }
-
+          
             function toggleHint(id) {
-                document.getElementById(id).classList.toggle('open');
+              const el = document.getElementById(id);
+              if (el) el.classList.toggle('open');
             }
-
+          
             async function loadExistingConnections() {
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                const userId = userData.user_id || 0;
-                const bridges = await fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json());
-
-                // Sources
-                const domains = [...new Set(bridges.map(b => b.source_config?.domain).filter(Boolean))];
-                document.getElementById('existing-sources').innerHTML = domains.length
-                    ? domains.map(d => `<div class="existing-card"><div class="existing-card-label">Bitrix24</div>${d}</div>`).join('')
-                    : '<div style="font-size:13px;color:var(--muted)">Нет подключённых источников</div>';
-
-                // Events
-                const events = [...new Set(bridges.map(b => b.event_type).filter(Boolean))];
-                document.getElementById('existing-events').innerHTML = events.length
-                    ? events.map(e => `<div class="existing-card"><div class="existing-card-label">Используется в ${bridges.filter(b => b.event_type === e).length} мостах</div>${e}</div>`).join('')
-                    : '<div style="font-size:13px;color:var(--muted)">Нет настроенных событий</div>';
-
-                // Targets
-                const chats = [...new Set(bridges.map(b => b.target_config?.chat_id).filter(Boolean))];
-                document.getElementById('existing-targets').innerHTML = chats.length
-                    ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
-                    : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              const userId = userData.user_id || 0;
+          
+              const bridges = await fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json());
+          
+              // Sources
+              const domains = [...new Set((bridges || []).map(b => b.source_config?.domain).filter(Boolean))];
+              const srcEl = document.getElementById('existing-sources');
+              if (srcEl) {
+                srcEl.innerHTML = domains.length
+                  ? domains.map(d => `<div class="existing-card"><div class="existing-card-label">Bitrix24</div>${d}</div>`).join('')
+                  : '<div style="font-size:13px;color:var(--muted)">Нет подключённых источников</div>';
+              }
+          
+              // Events
+              const events = [...new Set((bridges || []).map(b => b.event_type).filter(Boolean))];
+              const evEl = document.getElementById('existing-events');
+              if (evEl) {
+                evEl.innerHTML = events.length
+                  ? events.map(e => `<div class="existing-card"><div class="existing-card-label">Используется в ${(bridges || []).filter(b => b.event_type === e).length} мостах</div>${e}</div>`).join('')
+                  : '<div style="font-size:13px;color:var(--muted)">Нет настроенных событий</div>';
+              }
+          
+              // Targets
+              const chats = [...new Set((bridges || []).map(b => b.target_config?.chat_id).filter(Boolean))];
+              const tgEl = document.getElementById('existing-targets');
+              if (tgEl) {
+                tgEl.innerHTML = chats.length
+                  ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
+                  : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
+              }
             }
-
-
+          
             function showProfile() {
-                const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                const email = userData.email || '—';
-                document.getElementById('profile-email').textContent = email;
-                document.getElementById('profile-email-big').textContent = email;
+              const userData = JSON.parse(localStorage.getItem('user') || '{}');
+              const email = userData.email || '—';
+              const small = document.getElementById('profile-email');
+              const val = document.getElementById('profile-email-val');
+              if (small) small.textContent = email;
+              if (val) val.textContent = email;
             }
-    </script>
-</body>
-
+          
+            // INIT (после загрузки DOM)
+            document.addEventListener('DOMContentLoaded', () => {
+              window.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+          
+              if (!window.currentUser.user_id) {
+                window.location.href = '/login';
+                return;
+              }
+          
+              updatePreview();
+          
+              const savedScreen = localStorage.getItem('currentScreen') || 'dashboard';
+              const savedStep = parseInt(localStorage.getItem('currentStep') || '1', 10);
+          
+              showScreen(savedScreen);
+              if (savedScreen === 'create') {
+                goStep(savedStep);
+              }
+            });
+          </script>
+    </body>
 </html>
