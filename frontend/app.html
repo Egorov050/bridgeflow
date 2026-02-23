@@ -1296,8 +1296,9 @@
 
         // LOGS
         async function loadLogs() {
-            const logs = await fetch(`${API}/api/logs/`).then(r => r.json());
-            const tbody = document.getElementById('logs-body');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = user.user_id || 0;
+            const logs = await fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json());
             if (logs.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="loading">Логов пока нет</td></tr>';
                 return;
