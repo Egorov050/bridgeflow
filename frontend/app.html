@@ -776,47 +776,56 @@
             margin-left: 8px;
             text-decoration: underline;
             font-weight: 400;
-          }
-          
-          .hint-box {
+        }
+
+        .hint-box {
             display: none;
-            background: rgba(79,124,255,0.08);
-            border: 1px solid rgba(79,124,255,0.2);
+            background: rgba(79, 124, 255, 0.08);
+            border: 1px solid rgba(79, 124, 255, 0.2);
             border-radius: 8px;
             padding: 12px 14px;
             font-size: 13px;
             color: var(--muted);
             line-height: 1.6;
             margin-top: 8px;
-          }
-          
-          .hint-box.open { display: block; }
-          
-          .existing-card {
+        }
+
+        .hint-box.open {
+            display: block;
+        }
+
+        .existing-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 12px 14px;
             font-size: 13px;
-          }
-          
-          .existing-card-label {
+        }
+
+        .existing-card-label {
             font-size: 11px;
             color: var(--muted);
             margin-bottom: 4px;
-          }
+        }
 
-          @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-          }
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- AUTH SCREEN -->
-    
+
 
     <div class="sidebar">
         <div class="logo">Bridge<span>Flow</span></div>
@@ -888,203 +897,220 @@
             </div>
 
             <!-- Step 1 -->
-            <div class="step-content" id="step-1" style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;">
+            <div class="step-content" id="step-1"
+                style="max-width:100%;display:grid;grid-template-columns:1fr 340px;gap:32px;">
                 <div>
-                  <div class="step-title">Подключение к Bitrix24</div>
-                  <div class="step-desc">Введи данные для подключения к порталу</div>
-                  <div class="form-group">
-                    <label class="form-label">
-                      Домен портала
-                      <span class="hint-toggle" onclick="toggleHint('hint-domain')">? как найти</span>
-                    </label>
-                    <input class="form-input" id="b24-domain" placeholder="mycompany.bitrix24.ru">
-                    <div class="hint-box" id="hint-domain">
-                      💡 Это адрес твоего Bitrix24 в браузере. Например если заходишь на <strong>mycompany.bitrix24.ru</strong> — это и есть домен. Без https:// и без слеша.
+                    <div class="step-title">Подключение к Bitrix24</div>
+                    <div class="step-desc">Введи данные для подключения к порталу</div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Домен портала
+                            <span class="hint-toggle" onclick="toggleHint('hint-domain')">? как найти</span>
+                        </label>
+                        <input class="form-input" id="b24-domain" placeholder="mycompany.bitrix24.ru">
+                        <div class="hint-box" id="hint-domain">
+                            💡 Это адрес твоего Bitrix24 в браузере. Например если заходишь на
+                            <strong>mycompany.bitrix24.ru</strong> — это и есть домен. Без https:// и без слеша.
+                        </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">
-                      Токен входящего вебхука
-                      <span class="hint-toggle" onclick="toggleHint('hint-token')">? как найти</span>
-                    </label>
-                    <input class="form-input" id="b24-token" type="password" placeholder="swqjwlkrpbysc7kl">
-                    <div class="hint-box" id="hint-token">
-                      💡 Зайди в Bitrix24 → <strong>Разработчикам → Входящие вебхуки</strong> → Добавить вебхук. Дай права на <strong>CRM</strong>. Скопируй токен из строки:<br>
-                      <code style="color:#4f7cff">https://портал/rest/1/<strong>ТОКЕН</strong>/</code>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Токен входящего вебхука
+                            <span class="hint-toggle" onclick="toggleHint('hint-token')">? как найти</span>
+                        </label>
+                        <input class="form-input" id="b24-token" type="password" placeholder="swqjwlkrpbysc7kl">
+                        <div class="hint-box" id="hint-token">
+                            💡 Зайди в Bitrix24 → <strong>Разработчикам → Входящие вебхуки</strong> → Добавить вебхук.
+                            Дай права на <strong>CRM</strong>. Скопируй токен из строки:<br>
+                            <code style="color:#4f7cff">https://портал/rest/1/<strong>ТОКЕН</strong>/</code>
+                        </div>
                     </div>
-                  </div>
-                  <div class="step-footer">
-                    <span></span>
-                    <button class="btn btn-primary" onclick="goStep(2)">Далее →</button>
-                  </div>
+                    <div class="step-footer">
+                        <span></span>
+                        <button class="btn btn-primary" onclick="goStep(2)">Далее →</button>
+                    </div>
                 </div>
-              
+
                 <div>
-                  <div class="section-label">Выбери источник</div>
-                  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-                    <div class="source-card selected" onclick="selectCard(this,'source')" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">📊</div>
-                      <div>
-                        <div class="source-name">Bitrix24</div>
-                        <div class="source-badge">CRM · доступно</div>
-                      </div>
+                    <div class="section-label">Выбери источник</div>
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+                        <div class="source-card selected" onclick="selectCard(this,'source')"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">📊</div>
+                            <div>
+                                <div class="source-name">Bitrix24</div>
+                                <div class="source-badge">CRM · доступно</div>
+                            </div>
+                        </div>
+                        <div class="source-card disabled"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">📋</div>
+                            <div>
+                                <div class="source-name">1С</div>
+                                <div class="source-badge">скоро</div>
+                            </div>
+                        </div>
+                        <div class="source-card disabled"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">📄</div>
+                            <div>
+                                <div class="source-name">Контур</div>
+                                <div class="source-badge">скоро</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="source-card disabled" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">📋</div>
-                      <div>
-                        <div class="source-name">1С</div>
-                        <div class="source-badge">скоро</div>
-                      </div>
+                    <div class="section-label">Уже подключённые</div>
+                    <div id="existing-sources" style="display:flex;flex-direction:column;gap:8px;">
+                        <div class="loading">Загрузка...</div>
                     </div>
-                    <div class="source-card disabled" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">📄</div>
-                      <div>
-                        <div class="source-name">Контур</div>
-                        <div class="source-badge">скоро</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="section-label">Уже подключённые</div>
-                  <div id="existing-sources" style="display:flex;flex-direction:column;gap:8px;">
-                    <div class="loading">Загрузка...</div>
-                  </div>
                 </div>
-              </div>
+            </div>
 
             <!-- Step 2 -->
-            <div class="step-content" id="step-2" style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
+            <div class="step-content" id="step-2"
+                style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
                 <div>
-                  <div class="step-title">Настройка события</div>
-                  <div class="step-desc">Выбранное событие будет запускать уведомление</div>
-              
-                  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;">
-                    <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Выбранное событие</div>
-                    <div id="selected-event-display" style="font-size:15px;font-weight:500;">Новая сделка — ONCRMDEALADD</div>
-                  </div>
-              
-                  <div style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.15);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7;">
-                    💡 <strong style="color:var(--text)">Совет:</strong> Каждый тип события требует отдельного вебхука в Bitrix24. Если хочешь отслеживать несколько событий — создай несколько мостов.
-                  </div>
-              
-                  <div class="step-footer">
-                    <button class="btn btn-ghost" onclick="goStep(1)">← Назад</button>
-                    <button class="btn btn-primary" onclick="goStep(3)">Далее →</button>
-                  </div>
+                    <div class="step-title">Настройка события</div>
+                    <div class="step-desc">Выбранное событие будет запускать уведомление</div>
+
+                    <div
+                        style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;">
+                        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Выбранное событие</div>
+                        <div id="selected-event-display" style="font-size:15px;font-weight:500;">Новая сделка —
+                            ONCRMDEALADD</div>
+                    </div>
+
+                    <div
+                        style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.15);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7;">
+                        💡 <strong style="color:var(--text)">Совет:</strong> Каждый тип события требует отдельного
+                        вебхука в Bitrix24. Если хочешь отслеживать несколько событий — создай несколько мостов.
+                    </div>
+
+                    <div class="step-footer">
+                        <button class="btn btn-ghost" onclick="goStep(1)">← Назад</button>
+                        <button class="btn btn-primary" onclick="goStep(3)">Далее →</button>
+                    </div>
                 </div>
-              
+
                 <div>
-                  <div class="section-label">Выбери событие</div>
-                  <div class="events-list">
-                    <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
-                      <div class="event-radio"></div>
-                      <div class="event-info">
-                        <div class="event-name">Новая сделка</div>
-                        <div class="event-desc">При создании сделки</div>
-                      </div>
-                      <div class="event-tag">ADD</div>
+                    <div class="section-label">Выбери событие</div>
+                    <div class="events-list">
+                        <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info">
+                                <div class="event-name">Новая сделка</div>
+                                <div class="event-desc">При создании сделки</div>
+                            </div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info">
+                                <div class="event-name">Изменение сделки</div>
+                                <div class="event-desc">При любом изменении</div>
+                            </div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info">
+                                <div class="event-name">Новый лид</div>
+                                <div class="event-desc">При создании лида</div>
+                            </div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info">
+                                <div class="event-name">Изменение лида</div>
+                                <div class="event-desc">При изменении лида</div>
+                            </div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info">
+                                <div class="event-name">Новый контакт</div>
+                                <div class="event-desc">При добавлении контакта</div>
+                            </div>
+                            <div class="event-tag">ADD</div>
+                        </div>
                     </div>
-                    <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
-                      <div class="event-radio"></div>
-                      <div class="event-info">
-                        <div class="event-name">Изменение сделки</div>
-                        <div class="event-desc">При любом изменении</div>
-                      </div>
-                      <div class="event-tag">UPDATE</div>
+                    <div class="section-label" style="margin-top:16px;">Уже используются</div>
+                    <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
+                        <div class="loading">Загрузка...</div>
                     </div>
-                    <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
-                      <div class="event-radio"></div>
-                      <div class="event-info">
-                        <div class="event-name">Новый лид</div>
-                        <div class="event-desc">При создании лида</div>
-                      </div>
-                      <div class="event-tag">ADD</div>
-                    </div>
-                    <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
-                      <div class="event-radio"></div>
-                      <div class="event-info">
-                        <div class="event-name">Изменение лида</div>
-                        <div class="event-desc">При изменении лида</div>
-                      </div>
-                      <div class="event-tag">UPDATE</div>
-                    </div>
-                    <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
-                      <div class="event-radio"></div>
-                      <div class="event-info">
-                        <div class="event-name">Новый контакт</div>
-                        <div class="event-desc">При добавлении контакта</div>
-                      </div>
-                      <div class="event-tag">ADD</div>
-                    </div>
-                  </div>
-                  <div class="section-label" style="margin-top:16px;">Уже используются</div>
-                  <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
-                    <div class="loading">Загрузка...</div>
-                  </div>
                 </div>
-              </div>
+            </div>
 
             <!-- Step 3 -->
-            <div class="step-content" id="step-3" style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
+            <div class="step-content" id="step-3"
+                style="max-width:100%;display:none;grid-template-columns:1fr 340px;gap:32px;">
                 <div>
-                  <div class="step-title">Подключение к VK Teams</div>
-                  <div class="step-desc">Введи данные бота для отправки уведомлений</div>
-                  <div class="form-group">
-                    <label class="form-label">
-                      Токен бота
-                      <span class="hint-toggle" onclick="toggleHint('hint-vk-token')">? как найти</span>
-                    </label>
-                    <input class="form-input" id="vk-token" type="password" placeholder="001.xxx...">
-                    <div class="hint-box" id="hint-vk-token">
-                      💡 Зайди в VK Teams → <strong>Администрирование → Боты</strong> → Создай бота. Скопируй токен из настроек бота.
+                    <div class="step-title">Подключение к VK Teams</div>
+                    <div class="step-desc">Введи данные бота для отправки уведомлений</div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Токен бота
+                            <span class="hint-toggle" onclick="toggleHint('hint-vk-token')">? как найти</span>
+                        </label>
+                        <input class="form-input" id="vk-token" type="password" placeholder="001.xxx...">
+                        <div class="hint-box" id="hint-vk-token">
+                            💡 Зайди в VK Teams → <strong>Администрирование → Боты</strong> → Создай бота. Скопируй
+                            токен из настроек бота.
+                        </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">
-                      Chat ID получателя
-                      <span class="hint-toggle" onclick="toggleHint('hint-vk-chat')">? как найти</span>
-                    </label>
-                    <input class="form-input" id="vk-chat" placeholder="user@company.ru">
-                    <div class="hint-box" id="hint-vk-chat">
-                      💡 Для личного сообщения — email пользователя в VK Teams, например <strong>ivan@company.ru</strong>. Для группового чата — ID из URL чата.
+                    <div class="form-group">
+                        <label class="form-label">
+                            Chat ID получателя
+                            <span class="hint-toggle" onclick="toggleHint('hint-vk-chat')">? как найти</span>
+                        </label>
+                        <input class="form-input" id="vk-chat" placeholder="user@company.ru">
+                        <div class="hint-box" id="hint-vk-chat">
+                            💡 Для личного сообщения — email пользователя в VK Teams, например
+                            <strong>ivan@company.ru</strong>. Для группового чата — ID из URL чата.
+                        </div>
                     </div>
-                  </div>
-                  <div class="step-footer">
-                    <button class="btn btn-ghost" onclick="goStep(2)">← Назад</button>
-                    <button class="btn btn-primary" onclick="goStep(4)">Далее →</button>
-                  </div>
+                    <div class="step-footer">
+                        <button class="btn btn-ghost" onclick="goStep(2)">← Назад</button>
+                        <button class="btn btn-primary" onclick="goStep(4)">Далее →</button>
+                    </div>
                 </div>
-              
+
                 <div>
-                  <div class="section-label">Выбери получателя</div>
-                  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
-                    <div class="source-card selected" onclick="selectCard(this,'target')" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">💬</div>
-                      <div>
-                        <div class="source-name">VK Teams</div>
-                        <div class="source-badge">MyTeam · доступно</div>
-                      </div>
+                    <div class="section-label">Выбери получателя</div>
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+                        <div class="source-card selected" onclick="selectCard(this,'target')"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">💬</div>
+                            <div>
+                                <div class="source-name">VK Teams</div>
+                                <div class="source-badge">MyTeam · доступно</div>
+                            </div>
+                        </div>
+                        <div class="source-card disabled"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">✈️</div>
+                            <div>
+                                <div class="source-name">Telegram</div>
+                                <div class="source-badge">скоро</div>
+                            </div>
+                        </div>
+                        <div class="source-card disabled"
+                            style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
+                            <div style="font-size:24px;">💼</div>
+                            <div>
+                                <div class="source-name">Slack</div>
+                                <div class="source-badge">скоро</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="source-card disabled" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">✈️</div>
-                      <div>
-                        <div class="source-name">Telegram</div>
-                        <div class="source-badge">скоро</div>
-                      </div>
+                    <div class="section-label">Уже подключённые</div>
+                    <div id="existing-targets" style="display:flex;flex-direction:column;gap:8px;">
+                        <div class="loading">Загрузка...</div>
                     </div>
-                    <div class="source-card disabled" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px;">
-                      <div style="font-size:24px;">💼</div>
-                      <div>
-                        <div class="source-name">Slack</div>
-                        <div class="source-badge">скоро</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="section-label">Уже подключённые</div>
-                  <div id="existing-targets" style="display:flex;flex-direction:column;gap:8px;">
-                    <div class="loading">Загрузка...</div>
-                  </div>
                 </div>
-              </div>
+            </div>
 
             <!-- Step 4 -->
             <div class="step-content" id="step-4" style="display:none">
@@ -1231,21 +1257,21 @@
             if (name === 'logs') loadLogs();
             if (name === 'create') { goStep(1); updatePreview(); }
             if (name === 'profile') showProfile();
-            
+
             // Сохраняем текущий экран
             localStorage.setItem('currentScreen', name);
         }
 
         // DASHBOARD
         async function loadDashboard() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const userId = user.user_id || 0;
-            
+            const userData = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = userData.user_id || 0;
+
             const [bridges, logs] = await Promise.all([
                 fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json()),
                 fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json())
             ]);
-        
+
             const active = bridges.filter(b => b.is_active).length;
             document.getElementById('stat-active').textContent = active;
             document.getElementById('stat-total').textContent = bridges.length;
@@ -1261,30 +1287,30 @@
             list.innerHTML = bridges.map(b => {
                 const bridgeLogs = logs.filter(l => l.bridge_id === b.id);
                 const lastLog = bridgeLogs[0];
-                
+
                 let statusColor, statusGlow, statusTitle;
                 if (!lastLog) {
-                  statusColor = '#ff4f6d';
-                  statusGlow = 'rgba(255,79,109,0.4)';
-                  statusTitle = 'Ни одного события';
-                } else {
-                  const lastDate = new Date(lastLog.triggered_at + 'Z');
-                  const diffDays = (new Date() - lastDate) / (1000 * 60 * 60 * 24);
-                  if (diffDays < 1) {
-                    statusColor = '#2dd4a0';
-                    statusGlow = 'rgba(45,212,160,0.4)';
-                    statusTitle = 'Активен сегодня';
-                  } else if (diffDays < 7) {
-                    statusColor = '#f59e0b';
-                    statusGlow = 'rgba(245,158,11,0.4)';
-                    statusTitle = 'Нет событий больше суток';
-                  } else {
                     statusColor = '#ff4f6d';
                     statusGlow = 'rgba(255,79,109,0.4)';
-                    statusTitle = 'Нет событий больше недели';
-                  }
+                    statusTitle = 'Ни одного события';
+                } else {
+                    const lastDate = new Date(lastLog.triggered_at + 'Z');
+                    const diffDays = (new Date() - lastDate) / (1000 * 60 * 60 * 24);
+                    if (diffDays < 1) {
+                        statusColor = '#2dd4a0';
+                        statusGlow = 'rgba(45,212,160,0.4)';
+                        statusTitle = 'Активен сегодня';
+                    } else if (diffDays < 7) {
+                        statusColor = '#f59e0b';
+                        statusGlow = 'rgba(245,158,11,0.4)';
+                        statusTitle = 'Нет событий больше суток';
+                    } else {
+                        statusColor = '#ff4f6d';
+                        statusGlow = 'rgba(255,79,109,0.4)';
+                        statusTitle = 'Нет событий больше недели';
+                    }
                 }
-              
+
                 return `
                 <div class="bridge-card">
                   <div title="${statusTitle}" style="
@@ -1313,33 +1339,33 @@
                     <button class="btn btn-danger btn-sm" onclick="deleteBridge(${b.id})">✕</button>
                   </div>
                 </div>`;
-              }).join('');
+            }).join('');
 
-        async function toggleBridge(id, isActive) {
-            await fetch(`${API}/api/bridges/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ is_active: !isActive })
-            });
-            loadDashboard();
-        }
-
-        async function deleteBridge(id) {
-            if (!confirm('Удалить мост?')) return;
-            await fetch(`${API}/api/bridges/${id}`, { method: 'DELETE' });
-            loadDashboard();
-        }
-
-        // LOGS
-        async function loadLogs() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const userId = user.user_id || 0;
-            const logs = await fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json());
-            if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="loading">Логов пока нет</td></tr>';
-                return;
+            async function toggleBridge(id, isActive) {
+                await fetch(`${API}/api/bridges/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_active: !isActive })
+                });
+                loadDashboard();
             }
-            tbody.innerHTML = logs.map(l => `
+
+            async function deleteBridge(id) {
+                if (!confirm('Удалить мост?')) return;
+                await fetch(`${API}/api/bridges/${id}`, { method: 'DELETE' });
+                loadDashboard();
+            }
+
+            // LOGS
+            async function loadLogs() {
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                const userId = userData.user_id || 0;
+                const logs = await fetch(`${API}/api/logs/?user_id=${userId}`).then(r => r.json());
+                if (logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="loading">Логов пока нет</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = logs.map(l => `
     <tr>
       <td>${new Date(l.triggered_at + 'Z').toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</td>
       <td>Мост #${l.bridge_id}</td>
@@ -1347,225 +1373,225 @@
       <td>${l.payload?.['data[FIELDS][ID]'] || '—'}</td>
     </tr>
   `).join('');
-        }
-
-        // STEPS
-        function goStep(n) {
-            [1, 2, 3, 4].forEach(i => {
-              document.getElementById('step-' + i).style.display = i === n ? 'grid' : 'none';
-              // шаг 4 без грида
-              if (i === 4) document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none';
-              const ind = document.getElementById('si-' + i);
-              ind.classList.remove('active', 'done');
-              if (i < n) ind.classList.add('done');
-              if (i === n) ind.classList.add('active');
-              if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
-            });
-            localStorage.setItem('currentStep', n);
-            if (n <= 3) loadExistingConnections();
-          }
-
-        function selectCard(el, type) {
-            el.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-
-        function selectEvent(el, eventType) {
-            document.querySelectorAll('.event-item').forEach(e => e.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedEvent = eventType;
-            const names = {
-              'ONCRMDEALADD': 'Новая сделка',
-              'ONCRMDEALUPDATE': 'Изменение сделки',
-              'ONCRMLEADADD': 'Новый лид',
-              'ONCRMLEADUPDATE': 'Изменение лида',
-              'ONCRMCONTACTADD': 'Новый контакт'
-            };
-            const el2 = document.getElementById('selected-event-display');
-            if (el2) el2.textContent = `${names[eventType] || eventType} — ${eventType}`;
-          }
-
-        function insertVar(v) {
-            const ta = document.getElementById('template-area');
-            const pos = ta.selectionStart;
-            ta.value = ta.value.slice(0, pos) + v + ta.value.slice(pos);
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const tmpl = document.getElementById('template-area').value;
-            document.getElementById('preview-box').textContent = tmpl
-                .replace(/{TITLE}/g, 'Тестовая сделка')
-                .replace(/{AMOUNT}/g, '150 000')
-                .replace(/{CURRENCY}/g, 'RUB')
-                .replace(/{CONTACT}/g, 'Иван Иванов')
-                .replace(/{COMPANY}/g, 'ООО Ромашка');
-        }
-
-        // CREATE BRIDGE
-        async function createBridge() {
-            const body = {
-              name: document.getElementById('bridge-name').value || 'Новый мост',
-              source_type: 'bitrix24',
-              source_config: {
-                domain: document.getElementById('b24-domain').value,
-                token: document.getElementById('b24-token').value
-              },
-              event_type: selectedEvent,
-              target_type: 'myteam',
-              target_config: {
-                token: document.getElementById('vk-token').value,
-                chat_id: document.getElementById('vk-chat').value
-              },
-              template: document.getElementById('template-area').value
-            };
-          
-            // ✅ Берём user_id из localStorage
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const userId = user.user_id || 0;
-          
-            // ✅ Добавляем user_id в query params
-            const resp = await fetch(`${API}/api/bridges/?user_id=${userId}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(body)
-            });
-          
-            if (resp.ok) {
-              const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
-              document.getElementById('webhook-url').textContent = webhookUrl;
-              document.getElementById('webhook-event').textContent = body.event_type;
-              showScreen('success');
-            } else {
-              alert('Ошибка при создании моста');
-            }
-          }
-
-        // INIT
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        if (!user.user_id) {
-            window.location.href = '/login';
-        } else {
-            updatePreview();
-            // Восстанавливаем состояние
-            const savedScreen = localStorage.getItem('currentScreen') || 'dashboard';
-            const savedStep = parseInt(localStorage.getItem('currentStep') || '1');
-            
-            showScreen(savedScreen);
-            if (savedScreen === 'create') {
-                goStep(savedStep);
-            }
-        }
-
-        function copyUrl() {
-            const url = document.getElementById('webhook-url').textContent;
-            navigator.clipboard.writeText(url);
-            event.target.textContent = '✓ Скопировано';
-            setTimeout(() => event.target.textContent = 'Копировать', 2000);
-        }
-
-        let currentUser = null;
-
-        let currentTab = 'login';
-
-
-
-        async function submitAuth() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const errorEl = document.getElementById('auth-error');
-
-            if (!email || !password) {
-                errorEl.textContent = 'Заполни все поля';
-                errorEl.style.display = 'block';
-                return;
             }
 
-            const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+            // STEPS
+            function goStep(n) {
+                [1, 2, 3, 4].forEach(i => {
+                    document.getElementById('step-' + i).style.display = i === n ? 'grid' : 'none';
+                    // шаг 4 без грида
+                    if (i === 4) document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none';
+                    const ind = document.getElementById('si-' + i);
+                    ind.classList.remove('active', 'done');
+                    if (i < n) ind.classList.add('done');
+                    if (i === n) ind.classList.add('active');
+                    if (i < 4) document.getElementById('sl-' + i).classList.toggle('done', i < n);
+                });
+                localStorage.setItem('currentStep', n);
+                if (n <= 3) loadExistingConnections();
+            }
 
-            try {
-                const resp = await fetch(`${API}${endpoint}`, {
+            function selectCard(el, type) {
+                el.parentElement.querySelectorAll('.source-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+            }
+
+            function selectEvent(el, eventType) {
+                document.querySelectorAll('.event-item').forEach(e => e.classList.remove('selected'));
+                el.classList.add('selected');
+                selectedEvent = eventType;
+                const names = {
+                    'ONCRMDEALADD': 'Новая сделка',
+                    'ONCRMDEALUPDATE': 'Изменение сделки',
+                    'ONCRMLEADADD': 'Новый лид',
+                    'ONCRMLEADUPDATE': 'Изменение лида',
+                    'ONCRMCONTACTADD': 'Новый контакт'
+                };
+                const el2 = document.getElementById('selected-event-display');
+                if (el2) el2.textContent = `${names[eventType] || eventType} — ${eventType}`;
+            }
+
+            function insertVar(v) {
+                const ta = document.getElementById('template-area');
+                const pos = ta.selectionStart;
+                ta.value = ta.value.slice(0, pos) + v + ta.value.slice(pos);
+                updatePreview();
+            }
+
+            function updatePreview() {
+                const tmpl = document.getElementById('template-area').value;
+                document.getElementById('preview-box').textContent = tmpl
+                    .replace(/{TITLE}/g, 'Тестовая сделка')
+                    .replace(/{AMOUNT}/g, '150 000')
+                    .replace(/{CURRENCY}/g, 'RUB')
+                    .replace(/{CONTACT}/g, 'Иван Иванов')
+                    .replace(/{COMPANY}/g, 'ООО Ромашка');
+            }
+
+            // CREATE BRIDGE
+            async function createBridge() {
+                const body = {
+                    name: document.getElementById('bridge-name').value || 'Новый мост',
+                    source_type: 'bitrix24',
+                    source_config: {
+                        domain: document.getElementById('b24-domain').value,
+                        token: document.getElementById('b24-token').value
+                    },
+                    event_type: selectedEvent,
+                    target_type: 'myteam',
+                    target_config: {
+                        token: document.getElementById('vk-token').value,
+                        chat_id: document.getElementById('vk-chat').value
+                    },
+                    template: document.getElementById('template-area').value
+                };
+
+                // ✅ Берём user_id из localStorage
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                const userId = userData.user_id || 0;
+
+                // ✅ Добавляем user_id в query params
+                const resp = await fetch(`${API}/api/bridges/?user_id=${userId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify(body)
                 });
 
-                const data = await resp.json();
-
                 if (resp.ok) {
-                    currentUser = data;
-                    document.getElementById('screen-auth').style.display = 'none';
-                    loadDashboard();
+                    const webhookUrl = `${API}/api/webhooks/${body.event_type}`;
+                    document.getElementById('webhook-url').textContent = webhookUrl;
+                    document.getElementById('webhook-event').textContent = body.event_type;
+                    showScreen('success');
                 } else {
-                    errorEl.textContent = data.detail || 'Ошибка';
+                    alert('Ошибка при создании моста');
+                }
+            }
+
+            // INIT
+            window.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+            if (!userData.user_id) {
+                window.location.href = '/login';
+            } else {
+                updatePreview();
+                // Восстанавливаем состояние
+                const savedScreen = localStorage.getItem('currentScreen') || 'dashboard';
+                const savedStep = parseInt(localStorage.getItem('currentStep') || '1');
+
+                showScreen(savedScreen);
+                if (savedScreen === 'create') {
+                    goStep(savedStep);
+                }
+            }
+
+            function copyUrl() {
+                const url = document.getElementById('webhook-url').textContent;
+                navigator.clipboard.writeText(url);
+                event.target.textContent = '✓ Скопировано';
+                setTimeout(() => event.target.textContent = 'Копировать', 2000);
+            }
+
+            let currentUser = null;
+
+            let currentTab = 'login';
+
+
+
+            async function submitAuth() {
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-password').value;
+                const errorEl = document.getElementById('auth-error');
+
+                if (!email || !password) {
+                    errorEl.textContent = 'Заполни все поля';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+
+                try {
+                    const resp = await fetch(`${API}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await resp.json();
+
+                    if (resp.ok) {
+                        currentUser = data;
+                        document.getElementById('screen-auth').style.display = 'none';
+                        loadDashboard();
+                    } else {
+                        errorEl.textContent = data.detail || 'Ошибка';
+                        errorEl.style.display = 'block';
+                    }
+                } catch (e) {
+                    errorEl.textContent = 'Ошибка соединения';
                     errorEl.style.display = 'block';
                 }
-            } catch (e) {
-                errorEl.textContent = 'Ошибка соединения';
-                errorEl.style.display = 'block';
             }
-        }
 
-        // Проверяем Enter
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && document.getElementById('screen-auth').style.display !== 'none') {
-                submitAuth();
+            // Проверяем Enter
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && document.getElementById('screen-auth').style.display !== 'none') {
+                    submitAuth();
+                }
+            });
+
+            function loadProfile() {
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                document.getElementById('profile-email').textContent = userData.email || '—';
+                document.getElementById('profile-email-val').textContent = userData.email || '—';
             }
-        });
 
-        function loadProfile() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            document.getElementById('profile-email').textContent = user.email || '—';
-            document.getElementById('profile-email-val').textContent = user.email || '—';
-        }
-        
-        function logout() {
-            localStorage.removeItem('user');
-            window.location.href = '/login';
-        }
-        
-        async function deleteAccount() {
-            if (!confirm('Удалить аккаунт? Все мосты тоже удалятся.')) return;
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            await fetch(`${API}/api/auth/delete/${user.user_id}`, { method: 'DELETE' });
-            localStorage.removeItem('user');
-            window.location.href = '/login';
-        }
+            function logout() {
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
 
-        function toggleHint(id) {
-            document.getElementById(id).classList.toggle('open');
-          }
-          
-          async function loadExistingConnections() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const userId = user.user_id || 0;
-            const bridges = await fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json());
-          
-            // Sources
-            const domains = [...new Set(bridges.map(b => b.source_config?.domain).filter(Boolean))];
-            document.getElementById('existing-sources').innerHTML = domains.length
-              ? domains.map(d => `<div class="existing-card"><div class="existing-card-label">Bitrix24</div>${d}</div>`).join('')
-              : '<div style="font-size:13px;color:var(--muted)">Нет подключённых источников</div>';
-          
-            // Events
-            const events = [...new Set(bridges.map(b => b.event_type).filter(Boolean))];
-            document.getElementById('existing-events').innerHTML = events.length
-              ? events.map(e => `<div class="existing-card"><div class="existing-card-label">Используется в ${bridges.filter(b=>b.event_type===e).length} мостах</div>${e}</div>`).join('')
-              : '<div style="font-size:13px;color:var(--muted)">Нет настроенных событий</div>';
-          
-            // Targets
-            const chats = [...new Set(bridges.map(b => b.target_config?.chat_id).filter(Boolean))];
-            document.getElementById('existing-targets').innerHTML = chats.length
-              ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
-              : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
-          }
+            async function deleteAccount() {
+                if (!confirm('Удалить аккаунт? Все мосты тоже удалятся.')) return;
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                await fetch(`${API}/api/auth/delete/${userData.user_id}`, { method: 'DELETE' });
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
 
-        function showProfile() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            const email = user.email || '—';
-            document.getElementById('profile-email').textContent = email;
-            document.getElementById('profile-email-big').textContent = email;
-        }    
+            function toggleHint(id) {
+                document.getElementById(id).classList.toggle('open');
+            }
+
+            async function loadExistingConnections() {
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                const userId = userData.user_id || 0;
+                const bridges = await fetch(`${API}/api/bridges/?user_id=${userId}`).then(r => r.json());
+
+                // Sources
+                const domains = [...new Set(bridges.map(b => b.source_config?.domain).filter(Boolean))];
+                document.getElementById('existing-sources').innerHTML = domains.length
+                    ? domains.map(d => `<div class="existing-card"><div class="existing-card-label">Bitrix24</div>${d}</div>`).join('')
+                    : '<div style="font-size:13px;color:var(--muted)">Нет подключённых источников</div>';
+
+                // Events
+                const events = [...new Set(bridges.map(b => b.event_type).filter(Boolean))];
+                document.getElementById('existing-events').innerHTML = events.length
+                    ? events.map(e => `<div class="existing-card"><div class="existing-card-label">Используется в ${bridges.filter(b => b.event_type === e).length} мостах</div>${e}</div>`).join('')
+                    : '<div style="font-size:13px;color:var(--muted)">Нет настроенных событий</div>';
+
+                // Targets
+                const chats = [...new Set(bridges.map(b => b.target_config?.chat_id).filter(Boolean))];
+                document.getElementById('existing-targets').innerHTML = chats.length
+                    ? chats.map(c => `<div class="existing-card"><div class="existing-card-label">VK Teams</div>${c}</div>`).join('')
+                    : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
+            }
+
+            function showProfile() {
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                const email = userData.email || '—';
+                document.getElementById('profile-email').textContent = email;
+                document.getElementById('profile-email-big').textContent = email;
+            }    
     </script>
 </body>
 
