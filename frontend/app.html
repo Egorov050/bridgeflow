@@ -1068,7 +1068,9 @@
                         <input class="form-input" id="vk-chat" placeholder="user@company.ru">
                         <div class="hint-box" id="hint-vk-chat">
                             💡 Для личного сообщения — email пользователя в VK Teams, например
-                            <strong>ivan@company.ru</strong>. Для группового чата — ID из URL чата.
+                            <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                                    data-cfemail="7a130c1b143a1915170a1b140354080f">[email&#160;protected]</a></strong>.
+                            Для группового чата — ID из URL чата.
                         </div>
                     </div>
                     <div class="step-footer">
@@ -1242,6 +1244,7 @@
 
     </div>
 
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         const API = 'https://bridgeflow.onrender.com';
         let selectedEvent = 'ONCRMDEALADD';
@@ -1538,12 +1541,13 @@
                     : '<div style="font-size:13px;color:var(--muted)">Нет подключённых получателей</div>';
             }
 
+
             function showProfile() {
                 const userData = JSON.parse(localStorage.getItem('user') || '{}');
                 const email = userData.email || '—';
                 document.getElementById('profile-email').textContent = email;
                 document.getElementById('profile-email-big').textContent = email;
-            }    
+            }
     </script>
 </body>
 
