@@ -3,9 +3,12 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
 from models import User
-from passlib.hash import bcrypt
+import hashlib
 
 router = APIRouter()
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
 
 class RegisterData(BaseModel):
     email: str
@@ -22,7 +25,7 @@ def register(data: RegisterData, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email уже занят")
     user = User(
         email=data.email,
-        password_hash=bcrypt.hash(data.password)
+        password_hash=hash_password(data.password)
     )
     db.add(user)
     db.commit()
@@ -32,6 +35,6 @@ def register(data: RegisterData, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(data: LoginData, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
-    if not user or not bcrypt.verify(data.password, user.password_hash):
+    if not user or user.password_hash != hash_password(data.password):
         raise HTTPException(status_code=401, detail="Неверный email или пароль")
     return {"ok": True, "user_id": user.id, "email": user.email}
