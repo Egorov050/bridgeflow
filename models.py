@@ -36,3 +36,17 @@ class User(Base):
     email         = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
     created_at    = Column(DateTime, server_default=func.now())
+    
+    
+    
+class User(Base):
+    __tablename__ = "users"
+    id            = Column(Integer, primary_key=True, index=True)
+    email         = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    created_at    = Column(DateTime, server_default=func.now())
+    # Онбординг
+    company_field = Column(String, nullable=True)   # сфера компании
+    position      = Column(String, nullable=True)   # должность
+    company_size  = Column(String, nullable=True)   # размер компании
+    onboarding_done = Column(Boolean, default=False)

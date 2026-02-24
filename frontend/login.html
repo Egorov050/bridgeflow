@@ -57,39 +57,43 @@ function switchTab(tab) {
 }
 
 async function submitAuth() {
-  const email = document.getElementById('auth-email').value;
-  const password = document.getElementById('auth-password').value;
-  const errorEl = document.getElementById('auth-error');
-  errorEl.style.display = 'none';
-
-  if (!email || !password) {
-    errorEl.textContent = 'Заполни все поля';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
-
-  try {
-    const resp = await fetch(`${API}${endpoint}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email, password})
-    });
-    const data = await resp.json();
-
-    if (resp.ok) {
-      localStorage.setItem('user', JSON.stringify(data));
-      window.location.href = '/app';
-    } else {
-      errorEl.textContent = data.detail || 'Ошибка';
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    const errorEl = document.getElementById('auth-error');
+    errorEl.style.display = 'none';
+  
+    if (!email || !password) {
+      errorEl.textContent = 'Заполни все поля';
+      errorEl.style.display = 'block';
+      return;
+    }
+  
+    const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+  
+    try {
+      const resp = await fetch(`${API}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await resp.json();
+  
+      if (resp.ok) {
+        localStorage.setItem('user', JSON.stringify(data));
+        if (currentTab === 'register') {
+          showOnboarding();
+        } else {
+          window.location.href = '/app';
+        }
+      } else {
+        errorEl.textContent = data.detail || 'Ошибка';
+        errorEl.style.display = 'block';
+      }
+    } catch(e) {
+      errorEl.textContent = 'Ошибка соединения';
       errorEl.style.display = 'block';
     }
-  } catch(e) {
-    errorEl.textContent = 'Ошибка соединения';
-    errorEl.style.display = 'block';
   }
-}
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') submitAuth();
@@ -99,6 +103,115 @@ document.addEventListener('keydown', e => {
 if (localStorage.getItem('user')) {
   window.location.href = '/app';
 }
+
+let selectedSize = '';
+
+function selectSize(el, size) {
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSize = size;
+}
+
+function showOnboarding() {
+  const overlay = document.getElementById('onboarding-overlay');
+  overlay.style.display = 'flex';
+}
+
+async function submitOnboarding() {
+  const field = document.getElementById('ob-field').value;
+  const position = document.getElementById('ob-position').value;
+
+  if (!field || !position || !selectedSize) {
+    alert('Заполни все поля');
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  await fetch(`https://bridgeflow.onrender.com/api/auth/onboarding/${user.user_id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      company_field: field,
+      position: position,
+      company_size: selectedSize
+    })
+  });
+
+  document.getElementById('onboarding-overlay').style.display = 'none';
+  window.location.href = '/app';
+}
 </script>
+<!-- ONBOARDING POPUP -->
+<div id="onboarding-overlay" style="
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  z-index:2000;display:none;align-items:center;justify-content:center;
+">
+  <div style="background:#161920;border:1px solid #2a2f3f;border-radius:20px;padding:40px;width:480px;">
+    <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;">
+      Расскажи о себе 👋
+    </div>
+    <div style="color:#6b718a;font-size:14px;margin-bottom:32px;">
+      Поможет нам сделать BridgeFlow лучше для тебя
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Сфера компании</label>
+      <select class="form-input" id="ob-field" style="cursor:pointer;">
+        <option value="">Выбери сферу</option>
+        <option>Продажи и CRM</option>
+        <option>IT и разработка</option>
+        <option>Маркетинг</option>
+        <option>Логистика</option>
+        <option>Производство</option>
+        <option>Финансы</option>
+        <option>HR</option>
+        <option>Другое</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Твоя должность</label>
+      <select class="form-input" id="ob-position" style="cursor:pointer;">
+        <option value="">Выбери должность</option>
+        <option>Руководитель / CEO</option>
+        <option>Менеджер по продажам</option>
+        <option>Разработчик</option>
+        <option>Маркетолог</option>
+        <option>Аналитик</option>
+        <option>Администратор системы</option>
+        <option>Другое</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Размер компании</label>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div class="size-btn" onclick="selectSize(this,'1-10')">1–10</div>
+        <div class="size-btn" onclick="selectSize(this,'11-50')">11–50</div>
+        <div class="size-btn" onclick="selectSize(this,'51-200')">51–200</div>
+        <div class="size-btn" onclick="selectSize(this,'200+')">200+</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:24px;" onclick="submitOnboarding()">
+      Начать работу →
+    </button>
+  </div>
+</div>
+
+<style>
+.size-btn {
+  background: #1e2230;
+  border: 2px solid #2a2f3f;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.size-btn:hover { border-color: #4f7cff; }
+.size-btn.selected { border-color: #4f7cff; background: rgba(79,124,255,0.1); color: #4f7cff; }
+</style>
 </body>
 </html>

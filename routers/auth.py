@@ -20,7 +20,7 @@ class LoginData(BaseModel):
 
 @router.post("/register")
 def register(data: RegisterData, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == data.email).first()
+    existing = db.query(User).filter(userData.email == data.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email уже занят")
     user = User(
@@ -30,14 +30,14 @@ def register(data: RegisterData, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
-    return {"ok": True, "user_id": user.id, "email": user.email}
+    return {"ok": True, "user_id": user.id, "email": userData.email}
 
 @router.post("/login")
 def login(data: LoginData, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == data.email).first()
+    user = db.query(User).filter(userData.email == data.email).first()
     if not user or user.password_hash != hash_password(data.password):
         raise HTTPException(status_code=401, detail="Неверный email или пароль")
-    return {"ok": True, "user_id": user.id, "email": user.email}
+    return {"ok": True, "user_id": user.id, "email": userData.email}
 
 
 
@@ -47,5 +47,25 @@ def delete_account(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
     db.delete(user)
+    db.commit()
+    return {"ok": True}
+
+
+
+
+class OnboardingData(BaseModel):
+    company_field: str
+    position: str
+    company_size: str
+
+@router.post("/onboarding/{user_id}")
+def save_onboarding(user_id: int, data: OnboardingData, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
+    user.company_field = data.company_field
+    user.position = data.position
+    user.company_size = data.company_size
+    user.onboarding_done = True
     db.commit()
     return {"ok": True}

@@ -24,3 +24,20 @@ def run_migrations():
             print("Migration: added user_id to bridges")
         except Exception:
             pass  # Колонка уже есть
+        
+        
+        
+def run_migrations():
+    with engine.connect() as conn:
+        for column in [
+            "ALTER TABLE bridges ADD COLUMN user_id INTEGER",
+            "ALTER TABLE users ADD COLUMN company_field TEXT",
+            "ALTER TABLE users ADD COLUMN position TEXT",
+            "ALTER TABLE users ADD COLUMN company_size TEXT",
+            "ALTER TABLE users ADD COLUMN onboarding_done INTEGER DEFAULT 0",
+        ]:
+            try:
+                conn.execute(text(column))
+                conn.commit()
+            except Exception:
+                pass
