@@ -44,7 +44,7 @@ def create_bridge(data: BridgeCreate, user_id: int = 0, db: Session = Depends(ge
     if bridge.source_type == "bitrix24":
         domain = bridge.source_config.get("domain")
         token  = bridge.source_config.get("token")
-        handler_url = f"{BASE_URL}/api/webhooks/{bridge.event_type}"
+        handler_url = f"{BASE_URL}/api/webhooks/{bridge.event_type}/{bridge.user_id}"
         register_webhook(domain, token, bridge.event_type, handler_url)
 
     return bridge
