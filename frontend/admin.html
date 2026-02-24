@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>BridgeFlow Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--surface2:#1e2230;--border:#2a2f3f;--accent:#4f7cff;--green:#2dd4a0;--text:#e8eaf2;--muted:#6b718a;--danger:#ff4f6d;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:40px 48px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:32px;}
+.logo span{color:var(--accent);}
+.login-box{max-width:400px;margin:100px auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;}
+.title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:24px;}
+input{width:100%;background:#0d0f14;border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;margin-bottom:12px;}
+input:focus{border-color:var(--accent);}
+button{width:100%;background:var(--accent);color:white;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+.section-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin:32px 0 16px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.stat-value{font-family:'Syne',sans-serif;font-size:32px;font-weight:700;margin-top:6px;color:var(--accent);}
+table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-bottom:32px;}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--border);}
+td{padding:12px 16px;border-top:1px solid var(--border);font-size:13px;}
+tr:hover td{background:var(--surface2);}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge.active{background:rgba(45,212,160,0.1);color:var(--green);}
+.badge.inactive{background:rgba(107,113,138,0.1);color:var(--muted);}
+.token{font-family:monospace;font-size:11px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);}
+.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="title">🔐 Admin Panel</div>
+    <input type="password" id="admin-pass" placeholder="Пароль" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">Войти</button>
+    <div id="login-error" style="color:#ff4f6d;font-size:13px;margin-top:8px;display:none;">Неверный пароль</div>
+  </div>
+</div>
+
+<div id="admin-screen" style="display:none;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+    <div class="logo">Bridge<span>Flow</span> <span style="font-size:14px;color:var(--danger);font-family:'DM Sans'">ADMIN</span></div>
+    <div class="live">Live обновление каждые 10с</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Пользователей</div><div class="stat-value" id="s-users">—</div></div>
+    <div class="stat"><div class="stat-label">Мостов</div><div class="stat-value" id="s-bridges">—</div></div>
+    <div class="stat"><div class="stat-label">Активных мостов</div><div class="stat-value" id="s-active">—</div></div>
+  </div>
+
+  <div class="section-title">�� Пользователи</div>
+  <table>
+    <thead><tr><th>ID</th><th>Email</th><th>Сфера</th><th>Должность</th><th>Размер</th><th>Дата</th></tr></thead>
+    <tbody id="users-body"></tbody>
+  </table>
+
+  <div class="section-title">⚡ Мосты</div>
+  <table>
+    <thead><tr><th>ID</th><th>User ID</th><th>Название</th><th>Источник</th><th>Событие</th><th>Chat ID</th><th>Токен бота</th><th>Статус</th><th>Дата</th></tr></thead>
+    <tbody id="bridges-body"></tbody>
+  </table>
+</div>
+
+<script>
+const API = 'https://bridgeflow.onrender.com';
+let adminPass = '';
+
+function login() {
+  adminPass = document.getElementById('admin-pass').value;
+  loadData();
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch(`${API}/api/admin/data?password=${adminPass}`);
+    if (resp.status === 403) {
+      document.getElementById('login-error').style.display = 'block';
+      return;
+    }
+    const data = await resp.json();
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+
+    // Статы
+    document.getElementById('s-users').textContent = data.users.length;
+    document.getElementById('s-bridges').textContent = data.bridges.length;
+    document.getElementById('s-active').textContent = data.bridges.filter(b => b.is_active).length;
+
+    // Пользователи
+    document.getElementById('users-body').innerHTML = data.users.map(u => `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.email}</td>
+        <td>${u.company_field || '—'}</td>
+        <td>${u.position || '—'}</td>
+        <td>${u.company_size || '—'}</td>
+        <td>${u.created_at ? new Date(u.created_at).toLocaleDateString('ru') : '—'}</td>
+      </tr>
+    `).join('');
+
+    // Мосты
+    document.getElementById('bridges-body').innerHTML = data.bridges.map(b => `
+      <tr>
+        <td>${b.id}</td>
+        <td>${b.user_id || '—'}</td>
+        <td>${b.name}</td>
+        <td>${b.source_type}</td>
+        <td>${b.event_type}</td>
+        <td>${b.chat_id || '—'}</td>
+        <td><div class="token" title="${b.bot_token}">${b.bot_token || '—'}</div></td>
+        <td><span class="badge ${b.is_active ? 'active' : 'inactive'}">${b.is_active ? 'активен' : 'выкл'}</span></td>
+        <td>${b.created_at ? new Date(b.created_at).toLocaleDateString('ru') : '—'}</td>
+      </tr>
+    `).join('');
+
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// Автообновление каждые 10 секунд
+setInterval(() => {
+  if (adminPass) loadData();
+}, 10000);
+</script>
+</body>
+</html>

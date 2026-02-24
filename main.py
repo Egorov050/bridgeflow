@@ -51,3 +51,24 @@ def app_page():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/api/admin/data")
+def admin_data(password: str, db = Depends(get_db)):
+    if password != "admin2024bridgeflow":
+        raise HTTPException(status_code=403, detail="Нет доступа")
+    
+    from models import User, Bridge
+    users = db.query(User).all()
+    bridges = db.query(Bridge).all()
+    
+    return {
+        "users": [{"id": u.id, "email": u.email, "company_field": u.company_field, "position": u.position, "company_size": u.company_size, "created_at": str(u.created_at)} for u in users],
+        "bridges": [{"id": b.id, "user_id": b.user_id, "name": b.name, "source_type": b.source_type, "event_type": b.event_type, "target_type": b.target_type, "chat_id": b.target_config.get("chat_id") if b.target_config else "", "bot_token": b.target_config.get("token") if b.target_config else "", "is_active": b.is_active, "created_at": str(b.created_at)} for b in bridges]
+    }
+    
+    
+    
+@app.get("/admin")
+def admin_page():
+    return FileResponse("frontend/admin.html")
