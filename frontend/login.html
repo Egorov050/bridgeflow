@@ -83,7 +83,9 @@ async function submitAuth() {
         if (currentTab === 'register') {
           showOnboarding();
         } else {
-          window.location.href = '/app';
+            localStorage.setItem('currentScreen', 'dashboard');
+            localStorage.removeItem('currentStep');
+            window.location.href = '/app';
         }
       } else {
         errorEl.textContent = data.detail || 'Ошибка';
