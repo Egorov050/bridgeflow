@@ -15,16 +15,6 @@ def get_db():
     finally:
         db.close()
 
-def run_migrations():
-    """Добавляем недостающие колонки если их нет"""
-    with engine.connect() as conn:
-        try:
-            conn.execute(text("ALTER TABLE bridges ADD COLUMN user_id INTEGER"))
-            conn.commit()
-            print("Migration: added user_id to bridges")
-        except Exception:
-            pass  # Колонка уже есть
-        
         
         
 def run_migrations():
