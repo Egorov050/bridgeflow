@@ -118,28 +118,29 @@ function showOnboarding() {
 }
 
 async function submitOnboarding() {
-  const field = document.getElementById('ob-field').value;
-  const position = document.getElementById('ob-position').value;
-
-  if (!field || !position || !selectedSize) {
-    alert('Заполни все поля');
-    return;
+    const field = document.getElementById('ob-field').value;
+    const position = document.getElementById('ob-position').value;
+  
+    if (!field || !position || !selectedSize) {
+      alert('Заполни все поля');
+      return;
+    }
+  
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    await fetch(`https://bridgeflow.onrender.com/api/auth/onboarding/${user.user_id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        company_field: field,
+        position: position,
+        company_size: selectedSize
+      })
+    });
+  
+    localStorage.setItem('currentScreen', 'dashboard');  // сначала
+    localStorage.removeItem('currentStep');               // потом
+    window.location.href = '/app';                        // в конце
   }
-
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  await fetch(`https://bridgeflow.onrender.com/api/auth/onboarding/${user.user_id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      company_field: field,
-      position: position,
-      company_size: selectedSize
-    })
-  });
-
-  document.getElementById('onboarding-overlay').style.display = 'none';
-  window.location.href = '/app';
-}
 </script>
 <!-- ONBOARDING POPUP -->
 <div id="onboarding-overlay" style="
