@@ -992,47 +992,84 @@
 
                     <div>
                         <div class="section-label">Выбери событие</div>
-                        <div class="events-list">
-                            <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
-                                <div class="event-radio"></div>
-                                <div class="event-info">
-                                    <div class="event-name">Новая сделка</div>
-                                    <div class="event-desc">При создании сделки</div>
-                                </div>
-                                <div class="event-tag">ADD</div>
-                            </div>
-                            <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
-                                <div class="event-radio"></div>
-                                <div class="event-info">
-                                    <div class="event-name">Изменение сделки</div>
-                                    <div class="event-desc">При любом изменении</div>
-                                </div>
-                                <div class="event-tag">UPDATE</div>
-                            </div>
-                            <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
-                                <div class="event-radio"></div>
-                                <div class="event-info">
-                                    <div class="event-name">Новый лид</div>
-                                    <div class="event-desc">При создании лида</div>
-                                </div>
-                                <div class="event-tag">ADD</div>
-                            </div>
-                            <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
-                                <div class="event-radio"></div>
-                                <div class="event-info">
-                                    <div class="event-name">Изменение лида</div>
-                                    <div class="event-desc">При изменении лида</div>
-                                </div>
-                                <div class="event-tag">UPDATE</div>
-                            </div>
-                            <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
-                                <div class="event-radio"></div>
-                                <div class="event-info">
-                                    <div class="event-name">Новый контакт</div>
-                                    <div class="event-desc">При добавлении контакта</div>
-                                </div>
-                                <div class="event-tag">ADD</div>
-                            </div>
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Сделки</div>
+                        <div class="events-list" style="margin-bottom:16px;">
+                        <div class="event-item selected" onclick="selectEvent(this,'ONCRMDEALADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Новая сделка</div><div class="event-desc">При создании сделки</div></div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMDEALUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Изменение сделки</div><div class="event-desc">При любом изменении</div></div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMDEALDEL')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Удаление сделки</div><div class="event-desc">При удалении сделки</div></div>
+                            <div class="event-tag">DEL</div>
+                        </div>
+                        </div>
+
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Лиды</div>
+                        <div class="events-list" style="margin-bottom:16px;">
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Новый лид</div><div class="event-desc">При создании лида</div></div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Изменение лида</div><div class="event-desc">При изменении лида</div></div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMLEADDEL')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Удаление лида</div><div class="event-desc">При удалении лида</div></div>
+                            <div class="event-tag">DEL</div>
+                        </div>
+                        </div>
+
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Контакты</div>
+                        <div class="events-list" style="margin-bottom:16px;">
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Новый контакт</div><div class="event-desc">При добавлении контакта</div></div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMCONTACTUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Изменение контакта</div><div class="event-desc">При изменении контакта</div></div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        </div>
+
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Компании</div>
+                        <div class="events-list" style="margin-bottom:16px;">
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMCOMPANYADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Новая компания</div><div class="event-desc">При создании компании</div></div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONCRMCOMPANYUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Изменение компании</div><div class="event-desc">При изменении компании</div></div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
+                        </div>
+
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Задачи</div>
+                        <div class="events-list" style="margin-bottom:16px;">
+                        <div class="event-item" onclick="selectEvent(this,'ONTASKADD')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Новая задача</div><div class="event-desc">При создании задачи</div></div>
+                            <div class="event-tag">ADD</div>
+                        </div>
+                        <div class="event-item" onclick="selectEvent(this,'ONTASKUPDATE')">
+                            <div class="event-radio"></div>
+                            <div class="event-info"><div class="event-name">Изменение задачи</div><div class="event-desc">При изменении задачи</div></div>
+                            <div class="event-tag">UPDATE</div>
+                        </div>
                         </div>
                         <div class="section-label" style="margin-top:16px;">Уже используются</div>
                         <div id="existing-events" style="display:flex;flex-direction:column;gap:8px;">
@@ -1446,9 +1483,16 @@
               const names = {
                 'ONCRMDEALADD': 'Новая сделка',
                 'ONCRMDEALUPDATE': 'Изменение сделки',
+                'ONCRMDEALDEL': 'Удаление сделки',
                 'ONCRMLEADADD': 'Новый лид',
                 'ONCRMLEADUPDATE': 'Изменение лида',
-                'ONCRMCONTACTADD': 'Новый контакт'
+                'ONCRMLEADDEL': 'Удаление лида',
+                'ONCRMCONTACTADD': 'Новый контакт',
+                'ONCRMCONTACTUPDATE': 'Изменение контакта',
+                'ONCRMCOMPANYADD': 'Новая компания',
+                'ONCRMCOMPANYUPDATE': 'Изменение компании',
+                'ONTASKADD': 'Новая задача',
+                'ONTASKUPDATE': 'Изменение задачи'
               };
           
               const el2 = document.getElementById('selected-event-display');
