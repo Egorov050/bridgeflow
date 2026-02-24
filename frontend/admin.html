@@ -67,6 +67,11 @@ tr:hover td{background:var(--surface2);}
     <thead><tr><th>ID</th><th>User ID</th><th>Название</th><th>Источник</th><th>Событие</th><th>Chat ID</th><th>Токен бота</th><th>Статус</th><th>Дата</th></tr></thead>
     <tbody id="bridges-body"></tbody>
   </table>
+  <div class="section-title">📋 Все логи</div>
+  <table>
+    <thead><tr><th>ID</th><th>Bridge ID</th><th>Статус</th><th>Время</th></tr></thead>
+    <tbody id="logs-body"></tbody>
+  </table>
 </div>
 
 <script>
@@ -131,6 +136,16 @@ async function loadData() {
 setInterval(() => {
   if (adminPass) loadData();
 }, 10000);
+
+// Логи
+document.getElementById('logs-body').innerHTML = data.logs.map(l => `
+  <tr>
+    <td>${l.id}</td>
+    <td>${l.bridge_id}</td>
+    <td><span class="badge ${l.status === 'success' ? 'active' : 'inactive'}">${l.status}</span></td>
+    <td>${l.triggered_at ? new Date(l.triggered_at).toLocaleString('ru', {timeZone:'Europe/Moscow'}) : '—'}</td>
+  </tr>
+`).join('');
 </script>
 </body>
 </html>

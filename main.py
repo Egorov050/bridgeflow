@@ -53,10 +53,12 @@ def health():
 def admin_data(password: str, db = Depends(get_db)):
     if password != "admin2024bridgeflow":
         raise HTTPException(status_code=403, detail="Нет доступа")
-    from models import User, Bridge
+    from models import User, Bridge, Log
     users = db.query(User).all()
     bridges_list = db.query(Bridge).all()
+    logs = db.query(Log).all()
     return {
         "users": [{"id": u.id, "email": u.email, "company_field": u.company_field, "position": u.position, "company_size": u.company_size, "created_at": str(u.created_at)} for u in users],
-        "bridges": [{"id": b.id, "user_id": b.user_id, "name": b.name, "source_type": b.source_type, "event_type": b.event_type, "target_type": b.target_type, "chat_id": b.target_config.get("chat_id") if b.target_config else "", "bot_token": b.target_config.get("token") if b.target_config else "", "is_active": b.is_active, "created_at": str(b.created_at)} for b in bridges_list]
+        "bridges": [{"id": b.id, "user_id": b.user_id, "name": b.name, "source_type": b.source_type, "event_type": b.event_type, "target_type": b.target_type, "chat_id": b.target_config.get("chat_id") if b.target_config else "", "bot_token": b.target_config.get("token") if b.target_config else "", "is_active": b.is_active, "created_at": str(b.created_at)} for b in bridges_list],
+        "logs": [{"id": l.id, "bridge_id": l.bridge_id, "status": l.status, "triggered_at": str(l.triggered_at)} for l in logs]
     }
