@@ -1654,6 +1654,12 @@
               if (savedScreen === 'create') {
                 goStep(savedStep);
               }
+
+            setInterval(() => {
+                const screen = localStorage.getItem('currentScreen') || 'dashboard';
+                if (screen === 'dashboard') loadDashboard();
+                if (screen === 'logs') loadLogs();
+              }, 10000);
             });
           </script>
     </body>
