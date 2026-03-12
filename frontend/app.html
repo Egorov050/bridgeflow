@@ -807,6 +807,107 @@
                 margin-bottom: 4px;
             }
 
+
+            @media (max-width: 768px) {
+                html, body { overflow-x: hidden; }
+
+                /* Сайдбар → нижняя панель */
+                .sidebar {
+                    position: fixed;
+                    left: 0; right: 0;
+                    top: auto; bottom: 0;
+                    width: 100%;
+                    height: 60px;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-around;
+                    padding: 0;
+                    border-right: none;
+                    border-top: 1px solid var(--border);
+                    z-index: 100;
+                }
+
+                .logo { display: none; }
+
+                .nav-item {
+                    flex-direction: column;
+                    gap: 3px;
+                    padding: 8px 12px;
+                    font-size: 10px;
+                    border-left: none;
+                    border-top: 2px solid transparent;
+                    flex: 1;
+                    justify-content: center;
+                    text-align: center;
+                }
+
+                .nav-item.active {
+                    border-left-color: transparent;
+                    border-top-color: var(--accent);
+                }
+
+                .nav-item[style*="margin-top:auto"] {
+                    margin-top: 0 !important;
+                }
+
+                /* Основной контент */
+                .main {
+                    margin-left: 0;
+                    padding: 20px 16px 80px;
+                }
+
+                /* Заголовок страницы */
+                .page-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 12px;
+                    margin-bottom: 20px;
+                }
+
+                .page-title { font-size: 22px; }
+
+                /* Статистика */
+                .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+                .stat-card { padding: 12px; }
+                .stat-value { font-size: 24px; }
+                .stat-label { font-size: 10px; }
+
+                /* Карточки мостов */
+                .bridge-card {
+                    flex-wrap: wrap;
+                    gap: 12px;
+                    padding: 14px 16px;
+                }
+
+                .bridge-flow {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                    width: 100%;
+                }
+
+                .bridge-arrow { transform: rotate(90deg); }
+                .bridge-node { width: 100%; }
+
+                .bridge-meta { text-align: left; }
+
+                /* Шаги создания */
+                .steps-bar { gap: 4px; overflow-x: auto; padding-bottom: 4px; }
+                .step-line { width: 20px; margin: 0 2px; }
+                .step-item { font-size: 11px; gap: 4px; white-space: nowrap; }
+
+                /* Двухколоночные шаги → одна колонка */
+                #step-1, #step-2, #step-3 {
+                    grid-template-columns: 1fr !important;
+                }
+
+                /* Логи */
+                .logs-table th:nth-child(4),
+                .logs-table td:nth-child(4) { display: none; }
+
+                .logs-table td, .logs-table th { padding: 10px 8px; font-size: 12px; }
+            }
+
             @keyframes blink {
 
                 0%,
