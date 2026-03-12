@@ -885,9 +885,10 @@
 
                 /* Карточки мостов */
                 .bridge-card {
-                    flex-wrap: wrap;
+                    flex-direction: column;
+                    align-items: flex-start;
                     gap: 12px;
-                    padding: 14px 16px;
+                    padding: 16px;
                 }
 
                 .bridge-flow {
@@ -897,10 +898,28 @@
                     width: 100%;
                 }
 
-                .bridge-arrow { transform: rotate(90deg); }
-                .bridge-node { width: 100%; }
+                .bridge-arrow {
+                    transform: rotate(90deg);
+                    margin-left: 8px;
+                }
 
-                .bridge-meta { text-align: left; }
+                .bridge-node {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .bridge-meta {
+                    text-align: left;
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .bridge-actions {
+                    width: 100%;
+                    justify-content: flex-end;
+                }
 
                 /* Шаги создания */
                 .steps-bar { gap: 4px; overflow-x: auto; padding-bottom: 4px; }
